@@ -34,7 +34,7 @@ const Messages = ({ messages, channel }: { messages: Message[], channel: string 
 
     return (
         <div className="grow h-full flex flex-col">
-            <div id="messagesContainer" className="grow bg-base-100/50 mb-2 p-2 overflow-y-auto">
+            <div id="messagesContainer" className="grow bg-base-100/50 p-2 overflow-y-auto">
                 <div>
                     <button
                         disabled={
@@ -62,6 +62,17 @@ const Messages = ({ messages, channel }: { messages: Message[], channel: string 
                     </div>
                 })}
             </div>
+            <p className="text-sm italic text-gray-400 bg-base-100/50 mb-2">
+              {currentlyTyping.length ? (
+                `${listWithAnd(currentlyTyping)} ${pluralize(
+                  currentlyTyping.length,
+                  'is',
+                  'are',
+                )} typing...`
+              ) : (
+                <>&nbsp;</>
+              )}
+            </p>
             <div className="h-15 p-3 rounded-xl rounded-tr-none rounded-tl-none bg-base-100/50">
                 <ChannelInput channel={channel} />
             </div>

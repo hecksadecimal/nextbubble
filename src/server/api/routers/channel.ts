@@ -68,21 +68,30 @@ export const channelRouter = createTRPCRouter({
         },
       });
     }),
-   get: protectedProcedure
-    .input(z.object({ channel: z.string().max(32)}))
+  get: protectedProcedure
+    .input(z.object({ channel: z.string().max(32) }))
     .query(async ({ ctx, input }) => {
-        let channel = ctx.db.channel.findFirst({
-            where: {
-                id: input.channel
-            }
-        });
-        return channel;
+      let channel = ctx.db.channel.findFirst({
+        where: {
+          id: input.channel
+        }
+      });
+      return channel;
     }),
-    isTyping: protectedProcedure
+  isTyping: protectedProcedure
     .input(z.object({ channelId: z.string().min(1), typing: z.boolean() }))
     .mutation(async (opts) => {
-      const name = opts.ctx.session.user;
       const { channelId } = opts.input;
+      const channelAccount = await opts.ctx.db.channelAccount.findFirstOrThrow({
+        where: {
+          accountId: opts.ctx.session.id,
+          channelId
+        },
+        include: {
+          character: true
+        }
+      })
+      const name = channelAccount.character.name;
 
       if (!currentlyTyping[channelId]) {
         currentlyTyping[channelId] = {};

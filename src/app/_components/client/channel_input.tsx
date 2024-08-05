@@ -3,10 +3,17 @@
 import { ChangeEvent, FormEvent, KeyboardEvent, useState } from "react";
 
 import { api } from "@/trpc/react";
+import { useThrottledIsTypingMutation, useWhoIsTyping } from "@/app/(chat)/chat/[chat]/hooks";
+import React from "react";
 
 export function ChannelInput({ channel }: { channel: string }) {
+    const currentlyTyping = useWhoIsTyping(channel);
+    const isTypingMutation = useThrottledIsTypingMutation(channel);
+    
     const utils = api.useUtils();
     const [name, setName] = useState("");
+    const [isFocused, setIsFocused] = React.useState(false);
+    
     const createPost = api.message.add.useMutation({
         onSuccess: async () => {
             await utils.message.invalidate();
@@ -26,6 +33,8 @@ export function ChannelInput({ channel }: { channel: string }) {
     });
 
     function keydown(event: KeyboardEvent<HTMLDivElement>) {
+        isTypingMutation(true)
+
         if (!event.shiftKey && (event.key == "Enter")) {
             console.log(event)
             event.preventDefault()
