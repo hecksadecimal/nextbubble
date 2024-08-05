@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.cl-formFieldInput {
+    @apply input input-bordered;
+}
+
+.cl-modalContent .cl-button {
+    @apply btn;
+}
+
+.cl-formButtonPrimary {
+    @apply btn btn-primary;
+}

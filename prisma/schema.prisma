@@ -1,74 +1,143 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Channel {
+  id          String  @id @default(cuid())
+  description String?
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
+  createdById String
+  createdBy   Account @relation(fields: [createdById], references: [id])
 
-    @@index([name])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages        Message[]
+  channelAccounts ChannelAccount[]
 }
 
-// Necessary for Next auth
+enum MessageType {
+  SYSTEM
+  USER
+  ADMIN
+}
+
+model Message {
+  id        String @id @default(cuid())
+  channelId String
+  accountId String?
+  content   String
+  type      MessageType @default(SYSTEM)
+
+  createdAt DateTime @unique @default(now())
+  updatedAt DateTime @unique @updatedAt
+
+  channel Channel @relation(fields: [channelId], references: [id])
+  account Account? @relation(fields: [accountId], references: [id])
+}
+
 model Account {
-    id                       String  @id @default(cuid())
-    userId                   String
-    type                     String
-    provider                 String
-    providerAccountId        String
-    refresh_token            String? // @db.Text
-    access_token             String? // @db.Text
-    expires_at               Int?
-    token_type               String?
-    scope                    String?
-    id_token                 String? // @db.Text
-    session_state            String?
-    user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    refresh_token_expires_in Int?
+  id String @id
 
-    @@unique([provider, providerAccountId])
+  defaultCharacterId String?
+  defaultCharacter   Character? @relation("DefaultCharacter", fields: [defaultCharacterId], references: [id])
+
+  channelAccounts    ChannelAccount[]
+  messages           Message[]
+  createdChannels    Channel[]
+  createdCharacters  Character[]         @relation("Created")
+  preparedCharacters PreparedCharacter[]
 }
 
-model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model ChannelAccount {
+  channelId String
+  accountId String
+
+  identifier  Int
+  characterId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  character Character @relation(fields: [characterId], references: [id])
+  channel   Channel   @relation(fields: [channelId], references: [id])
+  account   Account   @relation(fields: [accountId], references: [id])
+
+  @@unique([channelId, identifier])
+  @@unique([channelId, accountId])
+  @@index([channelId, identifier])
+  @@index([channelId, accountId])
 }
 
-model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
+model Fandom {
+  id     String  @id @default(cuid())
+  name   String
+  icon   String?
+  colour String
+
+  characters Character[]
+
+  @@index([name])
 }
 
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+model Character {
+  id String @id @default(cuid())
 
-    @@unique([identifier, token])
+  name   String
+  colour String
+  icon   String?
+
+  fandomId     String
+  forkedFromId String?
+  createdById  String
+  system       Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  forkedFrom Character?  @relation("forks", fields: [forkedFromId], references: [id])
+  forks      Character[] @relation("forks")
+
+  fandom Fandom @relation(fields: [fandomId], references: [id])
+
+  createdBy Account @relation("Created", fields: [createdById], references: [id])
+
+  usedBy Account[] @relation("DefaultCharacter")
+
+  channelAccounts   ChannelAccount[]
+  references        CharacterReference[]
+  preparedCharacters PreparedCharacter[]
+
+  @@index([name])
+}
+
+model CharacterReference {
+  id String @id @default(cuid())
+
+  nsfw     Boolean  @default(false)
+  extreme  Boolean  @default(false)
+  warnings String[]
+
+  characterId String
+  references  String[]
+
+  character Character @relation(fields: [characterId], references: [id])
+}
+
+model PreparedCharacter {
+  characterId String
+  accountId   String
+
+  command   String
+
+  account   Account   @relation(fields: [accountId], references: [id])
+  character Character @relation(fields: [characterId], references: [id])
+
+  @@unique([accountId, characterId])
+  @@index([accountId, characterId])
 }
