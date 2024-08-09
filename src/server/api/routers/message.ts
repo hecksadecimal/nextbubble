@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { MessageType, Message } from "@prisma/client";
-import { currentlyTyping, ee } from './channel';
+import { currentlyTyping } from './channel';
 import { sse, tracked } from '@trpc/server';
 
 import {
@@ -9,6 +9,9 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { streamToAsyncIterable } from "@/lib/stream-to-async-iterator";
+import { Redis } from "ioredis";
+import { env } from "@/env";
+import { redis } from "@/server/db";
 
 export const messageRouter = createTRPCRouter({
   getLatest: protectedProcedure
@@ -56,11 +59,11 @@ export const messageRouter = createTRPCRouter({
       const channelTyping = currentlyTyping[channelId];
       if (channelTyping) {
         delete channelTyping[ctx.session.id];
-        ee.emit('isTypingUpdate', channelId, channelTyping);
+        redis.publish(`sub.channels:${channelId}:typing`, JSON.stringify(channelTyping));
       }
 
       const defMessage = message!;
-      ee.emit('add', channelId, defMessage);
+      redis.publish(`sub.channels:${channelId}`, JSON.stringify(defMessage));
 
       return message;
     }),
@@ -108,7 +111,7 @@ export const messageRouter = createTRPCRouter({
         // lastEventId is the last event id that the client has received
         // On the first call, it will be whatever was passed in the initial setup
         // If the client reconnects, it will be the last event id that the client received
-        lastEventId: z.string().nullish(),
+        lastEventId: z.date(),
       }),
     )
     .subscription(async function* ({ctx, input}) {
@@ -116,17 +119,20 @@ export const messageRouter = createTRPCRouter({
 
       const eventId = input.lastEventId;
       if (eventId) {
-        const itemById = await ctx.db.message.findFirst({
-          where: {
-            id: eventId
-          }
-        });
-        lastMessageCursor = itemById?.createdAt ?? null;
+        lastMessageCursor = new Date(eventId);
       }
+
+      // Don't use the redis instance in @server/db, because it becomes unusable for anything else while in 'subscriber' mode.
+      let redis = new Redis(env.REDIS_URL)
+
+      await redis.subscribe(`sub.channels:${input.channelId}`, (err) => {
+        if (err) console.log(err);
+      })
 
       let unsubscribe = () => {
         //
       };
+
 
       // We use a readable stream here to prevent the client from missing events
       // created between the fetching & yield'ing of `newItemsSinceCursor` and the
@@ -138,9 +144,10 @@ export const messageRouter = createTRPCRouter({
               controller.enqueue(data);
             }
           };
-          ee.on('add', onAdd);
+
+          redis.on('message', onAdd);
           unsubscribe = () => {
-            ee.off('add', onAdd);
+            redis.off('message', onAdd);
           };
 
           const newItemsSinceCursor = await ctx.db.message.findMany({
@@ -166,7 +173,7 @@ export const messageRouter = createTRPCRouter({
 
       for await (const message of streamToAsyncIterable(stream)) {
         // tracking the post id ensures the client can reconnect at any time and get the latest events this id
-        yield tracked(message.id, message);
+        yield tracked(message.createdAt.toString(), message);
       }
     }),
 });

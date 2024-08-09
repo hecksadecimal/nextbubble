@@ -1,72 +1,80 @@
 "use client";
 
-import { ChangeEvent, FormEvent, KeyboardEvent, useState } from "react";
+import { ChangeEvent, FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import { api } from "@/trpc/react";
+import { bbencode } from "@/lib/bbcode.js";
 import { useThrottledIsTypingMutation, useWhoIsTyping } from "@/app/(chat)/chat/[chat]/hooks";
 import React from "react";
+import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 
 export function ChannelInput({ channel }: { channel: string }) {
     const currentlyTyping = useWhoIsTyping(channel);
     const isTypingMutation = useThrottledIsTypingMutation(channel);
     
     const utils = api.useUtils();
-    const [name, setName] = useState("");
-    const [isFocused, setIsFocused] = React.useState(false);
+    const [content, setContent] = useState("");
+    const bbcodePreviewRef = useRef<HTMLParagraphElement>(null);
+    const inputRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const [inputHtml, setInputHtml] = useState({html: ""})
+
+    const bbcodeContent = useMemo(() => bbencode(content, false), [content])
     
     const createPost = api.message.add.useMutation({
         onSuccess: async () => {
             await utils.message.invalidate();
-            setName("");
+            setContent("");
+            setInputHtml({html: ""})
+            isTypingMutation(false);
             const input = document.getElementById("channelInput")
             if (input) {
                 input.innerText = ""
             }
-            const messagesContainer = document.getElementById("messagesContainer")!
-            console.log(messagesContainer.scrollHeight)
-            console.log(messagesContainer.scrollTop)
-            if ((messagesContainer.scrollHeight - messagesContainer.scrollTop) > 535 * 4) {
-                messagesContainer.scroll({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
-
-            }
         },
     });
 
-    function keydown(event: KeyboardEvent<HTMLDivElement>) {
+    function change(event: ContentEditableEvent) {
+        setInputHtml({html: event.target.value})
+        setContent(event.target.value)
         isTypingMutation(true)
+    }
 
+    function keydown(event: KeyboardEvent<HTMLDivElement>) {
         if (!event.shiftKey && (event.key == "Enter")) {
-            console.log(event)
             event.preventDefault()
-
-            let target = event.target as HTMLDivElement
-            setName(target.innerText)
-
-            let formButton = target.parentNode?.querySelector("#submitButton") as HTMLButtonElement
-            formButton.click()
+            buttonRef.current?.click()
         }
     }
 
     return (
+        <>
+        <div className="w-full min-h-4 max-h-24 overflow-y-auto my-2 ml-4 pb-2">
+            <p className="text-sm" ref={bbcodePreviewRef} dangerouslySetInnerHTML={{__html: bbcodeContent ?? ""}}>
+            </p>
+        </div>
         <div className="w-full">
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
                     let target = document.getElementById("channelInput") as HTMLDivElement
                     createPost.mutate({
-                        text: target.innerHTML,
+                        text: target.innerHTML.replaceAll("<br>", "\n").trim(),
                         channelId: channel
                     });
                 }}
                 className="flex flex-row gap-2"
             >
-                <div
+                <ContentEditable
+                    innerRef={inputRef}
+                    html={inputHtml.html}
                     onKeyDown={(e) => keydown(e)}
+                    onChange={change}
+                    onBlur={() => isTypingMutation(false)}
                     id="channelInput"
-                    className="textarea textarea-bordered py-1 overflow-y-scroll bg-transparent w-full max-h-72"
-                    contentEditable={true}
-                />
+                    className="textarea textarea-bordered py-1 overflow-y-scroll bg-transparent w-full max-h-72" />
                 <button
+                    ref={buttonRef}
                     type="submit"
                     id="submitButton"
                     className="rounded-lg bg-white/10 px-10 py-3 w-28 font-semibold transition hover:bg-white/20"
@@ -76,5 +84,6 @@ export function ChannelInput({ channel }: { channel: string }) {
                 </button>
             </form>
         </div>
+        </>
     );
 }

@@ -5,10 +5,10 @@ import { currentUser } from "@clerk/nextjs/server";
 import { db } from "@/server/db";
 import { MessageType } from "@prisma/client";
 import { ChannelInput } from "@/app/_components/client/ChannelInput";
-import Messages from "./Messages";
-import Sidebar from "./Sidebar";
+import Messages from "../Messages";
+import Sidebar from "../Sidebar";
 import { UserButton } from "@clerk/nextjs";
-import ClientUserButton from "./ClientUserButton";
+import ClientUserButton from "../ClientUserButton";
 
 export default async function Page({ params }: { params: { chat: string } }) {
     let session = await currentUser();

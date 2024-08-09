@@ -1,5 +1,6 @@
 import { z } from "zod";
 import EventEmitter, { on } from 'node:events';
+import { redis } from "@/server/db";
 import { sse } from '@trpc/server';
 
 import {
@@ -8,6 +9,8 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { Message } from "@prisma/client";
+import { Redis } from "ioredis";
+import { env } from "@/env";
 
 export type WhoIsTyping = Record<string, { lastTyped: Date }>;
 
@@ -35,7 +38,7 @@ class ChannelEventEmitter extends EventEmitter {
   }
 }
 
-export const ee = new ChannelEventEmitter();
+//export const ee = new ChannelEventEmitter();
 
 // who is currently typing for each channel, key is `name`
 export const currentlyTyping: Record<string, WhoIsTyping> = Object.create(null);
@@ -53,7 +56,7 @@ setInterval(() => {
     }
   }
   updatedChannels.forEach((channelId) => {
-    ee.emit('isTypingUpdate', channelId, currentlyTyping[channelId] ?? {});
+    redis.publish(`sub.channels:${channelId}:typing`, JSON.stringify(currentlyTyping[channelId] ?? {}))
   });
 }, 3e3).unref();
 
@@ -104,7 +107,7 @@ export const channelRouter = createTRPCRouter({
           lastTyped: new Date(),
         };
       }
-      ee.emit('isTypingUpdate', channelId, currentlyTyping[channelId]);
+      redis.publish(`sub.channels:${channelId}:typing`, JSON.stringify(currentlyTyping[channelId]))
     }),
 
   whoIsTyping: publicProcedure
@@ -115,6 +118,14 @@ export const channelRouter = createTRPCRouter({
     )
     .subscription(async function* (opts) {
       const { channelId } = opts.input;
+      const sub = new Redis(env.REDIS_URL)
+      sub.subscribe(`sub.channels:${channelId}:typing`)
+
+      let ee = new ChannelEventEmitter()
+
+      sub.on("message", (channelId, message) => {
+        ee.emit('isTypingUpdate', opts.input.channelId, JSON.parse(message) ?? {});
+      })
 
       let lastIsTyping = '';
 

@@ -2,13 +2,14 @@
 
 import React, { useEffect, useState } from 'react'
 import { Message, MessageType } from "@prisma/client";
-import { ChannelInput } from '@/app/_components/client/channel_input';
+import { ChannelInput } from '@/app/_components/client/ChannelInput';
 import { api } from "@/trpc/react";
 import {
     useLivePosts,
     useThrottledIsTypingMutation,
     useWhoIsTyping,
 } from './hooks';
+import MessageView from '@/app/_components/Message';
 
 
 const pluralize = (count: number, singular: string, plural: string) =>
@@ -31,10 +32,30 @@ const Messages = ({ messages, channel }: { messages: Message[], channel: string 
     const livePosts = useLivePosts(channel);
     const currentlyTyping = useWhoIsTyping(channel);
     const scrollRef = React.useRef<HTMLDivElement>(null);
+    const containerRef = React.useRef<HTMLDivElement>(null);
+
+    const executeScroll = () => {
+        if (!containerRef.current)  {
+            return
+        }
+        if (!scrollRef.current) {
+            return
+        }
+
+        let shouldScroll = containerRef.current.scrollHeight - containerRef.current.scrollTop - 500 <= scrollRef.current.clientHeight * 2
+
+        if (shouldScroll) {
+            scrollRef.current.scrollIntoView()
+        }
+    }
+
+    useEffect(() => {
+        executeScroll();
+    }, [livePosts])
 
     return (
         <div className="grow h-full flex flex-col">
-            <div id="messagesContainer" className="grow bg-base-100/50 p-2 overflow-y-auto">
+            <div id="messagesContainer" ref={containerRef} className="grow bg-base-100/50 p-2 overflow-y-auto">
                 <div>
                     <button
                         disabled={
@@ -53,12 +74,8 @@ const Messages = ({ messages, channel }: { messages: Message[], channel: string 
                     </button>
                 </div>
                 {livePosts.messages?.map((item) => {
-                    return <div className="flex" >
-                        <div className={"mx-3 prose text-base-content message-" + item.type + (item.type == MessageType.SYSTEM ? " p-4 m-1 bg-base-100/50 border border-info rounded-lg" : "")}>
-                            <div>
-                                {item.content}
-                            </div>
-                        </div>
+                    return <div ref={scrollRef} key={item.id} className="flex max-w-full break-words" >
+                        <MessageView message={item} />
                     </div>
                 })}
             </div>

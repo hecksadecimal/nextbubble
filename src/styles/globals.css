@@ -13,3 +13,21 @@
 .cl-formButtonPrimary {
     @apply btn btn-primary;
 }
+
+.rainbow {
+    background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.spoil {
+    border: dashed;
+    border-width: 1px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.spoiler{
+    opacity: 0;
+    cursor: pointer;
+}

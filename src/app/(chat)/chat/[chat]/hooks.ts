@@ -97,15 +97,19 @@ export function useLivePosts(channelId: string) {
     // Empty list
     | null
     // Event id
-    | string
+    | Date
   >(false);
   if (messages && lastEventId === false) {
     // We should only set the lastEventId once, if the SSE-connection is lost, it will automatically reconnect and continue from the last event id
     // Changing this value will trigger a new subscription
-    setLastEventId(messages.at(-1)?.id ?? null);
+    setLastEventId(messages.at(-1)?.createdAt ?? null);
   }
   api.message.onAdd.useSubscription(
-    lastEventId === false ? skipToken : { channelId, lastEventId },
+    //@ts-expect-error
+    (lastEventId === false || null) ? skipToken : { 
+        channelId,
+        lastEventId: lastEventId 
+    },
     {
       onData(event) {
         addMessages([event.data]);
