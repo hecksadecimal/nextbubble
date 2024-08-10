@@ -43,7 +43,7 @@ export const messageRouter = createTRPCRouter({
         text: z.string().trim().min(1),
       }),
     )
-    .mutation(async ({ctx, input}) => {
+    .mutation(async ({ ctx, input }) => {
       const { channelId } = input;
       let channelAccount = await ctx.db.channelAccount.findFirst({
         where: {
@@ -88,7 +88,7 @@ export const messageRouter = createTRPCRouter({
       return message;
     }),
 
-  infinite: publicProcedure
+  infinite: protectedProcedure
     .input(
       z.object({
         channelId: z.string().min(1),
@@ -96,7 +96,7 @@ export const messageRouter = createTRPCRouter({
         take: z.number().min(1).max(50).nullish(),
       }),
     )
-    .query(async ({ctx, input}) => {
+    .query(async ({ ctx, input }) => {
       const take = input.take ?? 20;
       const cursor = input.cursor;
 
@@ -124,7 +124,7 @@ export const messageRouter = createTRPCRouter({
       };
     }),
 
-  onAdd: publicProcedure
+  onAdd: protectedProcedure
     .input(
       z.object({
         channelId: z.string().min(1),
@@ -134,7 +134,7 @@ export const messageRouter = createTRPCRouter({
         lastEventId: z.date(),
       }),
     )
-    .subscription(async function* ({ctx, input}) {
+    .subscription(async function* ({ ctx, input }) {
       let lastMessageCursor: Date | null = null;
 
       const eventId = input.lastEventId;
@@ -142,10 +142,13 @@ export const messageRouter = createTRPCRouter({
         lastMessageCursor = new Date(eventId);
       }
 
-      // Don't use the redis instance in @server/db, because it becomes unusable for anything else while in 'subscriber' mode.
-      let redis = new Redis(env.REDIS_URL)
+      redis.set(`channelAccounts:${input.channelId}.${ctx.session.id}:heartbeat`, 1)
+      redis.expire(`channelAccounts:${input.channelId}.${ctx.session?.id}:heartbeat`, 30)
 
-      await redis.subscribe(`sub.channels:${input.channelId}`, (err) => {
+      // Don't use the redis instance in @server/db, because it becomes unusable for anything else while in 'subscriber' mode.
+      let sub = new Redis(env.REDIS_URL)
+
+      await sub.subscribe(`sub.channels:${input.channelId}`, (err) => {
         if (err) console.log(err);
       })
 
@@ -165,9 +168,9 @@ export const messageRouter = createTRPCRouter({
             }
           };
 
-          redis.on('message', onAdd);
+          sub.on('message', onAdd);
           unsubscribe = () => {
-            redis.off('message', onAdd);
+            sub.off('message', onAdd);
           };
 
           const newItemsSinceCursor = await ctx.db.message.findMany({
