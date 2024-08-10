@@ -10,6 +10,7 @@ import {
     useWhoIsTyping,
 } from './hooks';
 import MessageView from '@/app/_components/Message';
+import { Quirk } from '@/lib/quirk';
 
 
 const pluralize = (count: number, singular: string, plural: string) =>
@@ -28,7 +29,7 @@ const listWithAnd = (list: string[]) => {
     return `${list.slice(0, -1).join(', ')}, and ${list.at(-1)}`;
 };
 
-const Messages = ({ messages, channel }: { messages: Message[], channel: string }) => {
+const Messages = ({ messages, channel, userQuirk }: { messages: Message[], channel: string, userQuirk?: Quirk }) => {
     const livePosts = useLivePosts(channel);
     const currentlyTyping = useWhoIsTyping(channel);
     const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -91,7 +92,7 @@ const Messages = ({ messages, channel }: { messages: Message[], channel: string 
               )}
             </p>
             <div className="h-15 p-3 rounded-xl rounded-tr-none rounded-tl-none bg-base-300/50">
-                <ChannelInput channel={channel} />
+                <ChannelInput channel={channel} quirk={userQuirk} />
             </div>
         </div>
     )

@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { MessageType, Message } from "@prisma/client";
+import { MessageType, Message, Prisma } from "@prisma/client";
 import { currentlyTyping } from './channel';
-import { sse, tracked } from '@trpc/server';
+import { sse, tracked, TRPCError } from '@trpc/server';
 
 import {
   createTRPCRouter,
@@ -45,6 +45,20 @@ export const messageRouter = createTRPCRouter({
     )
     .mutation(async ({ctx, input}) => {
       const { channelId } = input;
+      let channelAccount = await ctx.db.channelAccount.findFirst({
+        where: {
+          channelId: input.channelId,
+          accountId: ctx.session.id
+        }
+      })
+      console.log(channelAccount)
+
+      if (!channelAccount) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: "You aren't in this chat.",
+        });
+      }
 
       const message = await ctx.db.message
         .create({
@@ -52,7 +66,13 @@ export const messageRouter = createTRPCRouter({
             content: input.text,
             accountId: ctx.session.id,
             type: MessageType.USER,
-            channelId
+            channelId,
+
+            prefix: channelAccount.prefix,
+            color: channelAccount.color,
+            suffix: channelAccount.suffix,
+            acronym: channelAccount.acronym,
+            replacements: channelAccount.replacements as Prisma.JsonObject
           }
         })
 

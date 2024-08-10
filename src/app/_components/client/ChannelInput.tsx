@@ -9,8 +9,9 @@ import React from "react";
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import BBCodeView from "../BBCode/BBCode";
 import { MessageType } from "@prisma/client";
+import { Quirk } from "@/lib/quirk";
 
-export function ChannelInput({ channel }: { channel: string }) {
+export function ChannelInput({ channel, quirk }: { channel: string, quirk?: Quirk }) {
     const currentlyTyping = useWhoIsTyping(channel);
     const isTypingMutation = useThrottledIsTypingMutation(channel);
     
@@ -50,7 +51,7 @@ export function ChannelInput({ channel }: { channel: string }) {
     return (
         <>
         <div className="w-full min-h-4 max-h-24 overflow-y-auto my-2 ml-4 pb-2">
-            <BBCodeView content={content} />
+            <BBCodeView content={content} quirk={quirk} />
         </div>
         <div className="w-full">
             <form

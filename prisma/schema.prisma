@@ -28,16 +28,22 @@ enum MessageType {
 }
 
 model Message {
-  id        String @id @default(cuid())
+  id        String      @id @default(cuid())
   channelId String
   accountId String?
   content   String
   type      MessageType @default(SYSTEM)
 
+  acronym      String?
+  color        String?
+  prefix       String?
+  suffix       String?
+  replacements Json?
+
   createdAt DateTime @unique @default(now())
   updatedAt DateTime @unique @updatedAt
 
-  channel Channel @relation(fields: [channelId], references: [id])
+  channel Channel  @relation(fields: [channelId], references: [id])
   account Account? @relation(fields: [accountId], references: [id])
 }
 
@@ -60,6 +66,12 @@ model ChannelAccount {
 
   identifier  Int
   characterId String
+
+  acronym      String?
+  color        String?
+  prefix       String?
+  suffix       String?
+  replacements Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -97,6 +109,11 @@ model Character {
   createdById  String?
   system       Boolean @default(false)
 
+  acronym      String?
+  prefix       String?
+  suffix       String?
+  replacements Json?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -109,8 +126,8 @@ model Character {
 
   usedBy Account[] @relation("DefaultCharacter")
 
-  channelAccounts   ChannelAccount[]
-  references        CharacterReference[]
+  channelAccounts    ChannelAccount[]
+  references         CharacterReference[]
   preparedCharacters PreparedCharacter[]
 
   @@index([name])
@@ -133,7 +150,7 @@ model PreparedCharacter {
   characterId String
   accountId   String
 
-  command   String
+  command String
 
   account   Account   @relation(fields: [accountId], references: [id])
   character Character @relation(fields: [characterId], references: [id])

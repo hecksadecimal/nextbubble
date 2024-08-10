@@ -10,6 +10,7 @@ import Sidebar from "./Sidebar";
 import { UserButton } from "@clerk/nextjs";
 import ClientUserButton from "./ClientUserButton";
 import ThemeSwitch from "@/app/_components/client/ThemeSwitch";
+import { Quirk } from "@/lib/quirk";
 
 export default async function Page({ params }: { params: { chat: string } }) {
     let session = await currentUser();
@@ -71,6 +72,14 @@ export default async function Page({ params }: { params: { chat: string } }) {
         })
     }
 
+    const quirk: Quirk = {
+        acronym: channelAccount.acronym ?? undefined,
+        color: channelAccount.color ?? undefined,
+        prefix: channelAccount.prefix ?? undefined,
+        suffix: channelAccount.suffix ?? undefined,
+        replacements: channelAccount.replacements as [[string, string]] ?? undefined
+    }
+
     var allChannelAccounts = await db.channelAccount.findMany({
         where: {channelId: params.chat},
         include: {
@@ -86,7 +95,7 @@ export default async function Page({ params }: { params: { chat: string } }) {
             <div className="grow">
                 <div className="flex bg-base-300/50">              
                     <div className="flex-grow text-base-content h-screen p-2 rounded-md">
-                        <Messages messages={messages} channel={params.chat}/>
+                        <Messages messages={messages} channel={params.chat} userQuirk={quirk}/>
                     </div>
                     <div className="w-80 bg-base-300/50 text-base-content p-2 hidden md:block">
                         <div className="h-full overflow-y-auto max-h-screen">
