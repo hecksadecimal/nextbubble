@@ -77,7 +77,7 @@ export function ChannelInput({ channel, quirk }: { channel: string, quirk?: Quir
                     ref={buttonRef}
                     type="submit"
                     id="submitButton"
-                    className="rounded-lg bg-primary/10 px-10 py-3 w-28 font-semibold transition hover:bg-primary/20"
+                    className="rounded-btn bg-primary/10 px-10 py-3 w-28 font-semibold transition hover:bg-primary/20"
                     disabled={createPost.isPending}
                 >
                     {createPost.isPending ? <span className="loading loading-dots loading-xs"></span> : "==>"}

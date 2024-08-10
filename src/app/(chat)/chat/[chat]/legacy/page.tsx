@@ -103,7 +103,7 @@ export default async function Page({ params }: { params: { chat: string } }) {
                             <Sidebar channelAccounts={allChannelAccounts}/>
                         </div>
                     </div>               
-                    <div className="flex-grow  h-screen p-2 rounded-md">
+                    <div className="flex-grow  h-screen p-2 rounded-box">
                         <Messages messages={messages} channel={params.chat}/>
                     </div>
                 </div>

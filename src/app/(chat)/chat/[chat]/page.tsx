@@ -94,7 +94,7 @@ export default async function Page({ params }: { params: { chat: string } }) {
         <main className="flex flex-row w-full max-h-screen">
             <div className="grow">
                 <div className="flex bg-base-300/50">              
-                    <div className="flex-grow text-base-content h-screen p-2 rounded-md">
+                    <div className="flex-grow text-base-content h-screen p-2 rounded-box">
                         <Messages messages={messages} channel={params.chat} userQuirk={quirk}/>
                     </div>
                     <div className="w-80 bg-base-300/50 text-base-content p-2 hidden md:block">

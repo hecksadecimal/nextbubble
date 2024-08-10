@@ -56,7 +56,7 @@ const Messages = ({ messages, channel, userQuirk }: { messages: Message[], chann
 
     return (
         <div className="grow h-full flex flex-col">
-            <div id="messagesContainer" ref={containerRef} className="grow bg-base-300/50 p-2 overflow-y-auto">
+            <div id="messagesContainer" ref={containerRef} className="grow bg-base-300/50 p-2 overflow-y-auto rounded-box rounded-br-none rounded-bl-none">
                 <div>
                     <button
                         disabled={
@@ -80,7 +80,7 @@ const Messages = ({ messages, channel, userQuirk }: { messages: Message[], chann
                     </div>
                 })}
             </div>
-            <p className="text-sm italic text-base-content bg-base-300/50 mb-2">
+            <p className="text-sm italic text-base-content bg-base-300/50 mb-2 rounded-box rounded-tr-none rounded-tl-nones">
               {currentlyTyping.length ? (
                 `${listWithAnd(currentlyTyping)} ${pluralize(
                   currentlyTyping.length,
@@ -91,7 +91,7 @@ const Messages = ({ messages, channel, userQuirk }: { messages: Message[], chann
                 <>&nbsp;</>
               )}
             </p>
-            <div className="h-15 p-3 rounded-xl rounded-tr-none rounded-tl-none bg-base-300/50">
+            <div className="h-15 p-3 rounded-box bg-base-300/50">
                 <ChannelInput channel={channel} quirk={userQuirk} />
             </div>
         </div>

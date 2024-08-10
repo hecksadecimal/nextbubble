@@ -6,7 +6,7 @@ import BBCodeView from "./BBCode/BBCode";
 export default function MessageView({ message }: { message: Message }) {
     return (
         <>
-        <div className={"mx-3 max-w-full text-base-content message-" + message.type + (message.type == MessageType.SYSTEM ? " p-4 m-1 bg-base-200/50 border border-info rounded-lg" : "")}>
+        <div className={"mx-3 max-w-full text-base-content message-" + message.type + (message.type == MessageType.SYSTEM ? " p-4 m-1 bg-base-200/50 border border-info rounded-badge" : "")}>
             <BBCodeView content={message.content} quirk={{
                 prefix: message.prefix ?? undefined,
                 color: message.color ?? undefined,
