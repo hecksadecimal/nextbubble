@@ -5,7 +5,8 @@ import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { dark } from '@clerk/themes';
+import { dark, neobrutalism } from '@clerk/themes';
+import { ThemeProvider } from 'next-themes'
 
 export const metadata: Metadata = {
   title: "Dreambubble",
@@ -18,12 +19,14 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode  }>) {
   return (
     <ClerkProvider appearance={{
-      baseTheme: dark
+      baseTheme: neobrutalism
     }}>
-      <html lang="en" className={`dark ${GeistSans.variable}`}>
+      <html suppressHydrationWarning data-theme="msparp" lang="en" className={`light ${GeistSans.variable}`}>
         <body>
           <TRPCReactProvider>
-            {children}
+            <ThemeProvider>
+              {children}
+            </ThemeProvider>
           </TRPCReactProvider>
         </body>
       </html>

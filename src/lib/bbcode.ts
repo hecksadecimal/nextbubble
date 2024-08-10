@@ -21,7 +21,9 @@ parser.registerTag('email', {
 
 parser.registerTag('color', {
     type: 'replace',
-    open: attr => `<span style="color: ${attr || "#000000"};">`,
+    open: (attr) => {
+        return `<span style="color: ${(attr || "#000000").startsWith("--") ? `var(--fallback-${attr.replace("--", "")},oklch(var(${attr})/var(--tw-text-opacity)))` : (attr || "#000000")};">`
+    },
     close: () => '</span>',
 });
 

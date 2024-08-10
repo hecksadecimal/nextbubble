@@ -76,7 +76,7 @@ export function ChannelInput({ channel }: { channel: string }) {
                     ref={buttonRef}
                     type="submit"
                     id="submitButton"
-                    className="rounded-lg bg-white/10 px-10 py-3 w-28 font-semibold transition hover:bg-white/20"
+                    className="rounded-lg bg-primary/10 px-10 py-3 w-28 font-semibold transition hover:bg-primary/20"
                     disabled={createPost.isPending}
                 >
                     {createPost.isPending ? <span className="loading loading-dots loading-xs"></span> : "==>"}

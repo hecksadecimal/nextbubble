@@ -83,7 +83,7 @@ export default async function Page({ params }: { params: { chat: string } }) {
     return (
         <main className="flex flex-row w-full">
             <div className="grow">
-                <div className="flex bg-base-100/50">
+                <div className="flex bg-base-300/50">
                     <div className="w-20 text-gray-500 h-screen flex flex-col items-center justify-between py-5">
                         <div className="">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,7 +96,7 @@ export default async function Page({ params }: { params: { chat: string } }) {
                             <ClientUserButton />
                         </div>   
                     </div>
-                    <div className="w-80 bg-base-100/50 p-2 hidden md:block">
+                    <div className="w-80 bg-base-300/50 p-2 hidden md:block">
                         <div className="h-full overflow-y-auto">
                             <div className="text-xl font-extrabold p-3">{params.chat}</div>
                             <div className="text-lg font-semibol p-3">Active Users</div>
