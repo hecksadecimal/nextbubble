@@ -21,15 +21,6 @@ export type Quirk = {
     replacements?: Replacement[]
 }
 
-const colorBlacklist = [
-    "white",
-    "black",
-    "000",
-    "000000",
-    "fff",
-    "ffffff"
-]
-
 export const applyQuirk = (text: string, quirk: Quirk) => {
     var character = quirk;
     if (!quirk.prefix) {
@@ -239,5 +230,5 @@ export const applyQuirk = (text: string, quirk: Quirk) => {
         }
     }
 
-    return `[color=${quirk.color ? (colorBlacklist.includes(quirk.color) ? "--bc" : `${quirk.color}`) : "--bc"}]${final_text}[/color]`;
+    return `[color=${quirk.color ? quirk.color : "--bc"}]${final_text}[/color]`;
 }

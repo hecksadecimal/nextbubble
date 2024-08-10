@@ -1,6 +1,16 @@
 import bbcode from "ya-bbcode";
  
 export const parser = new bbcode();
+
+export const colorBlacklist = [
+    "white",
+    "black",
+    "#000",
+    "#000000",
+    "#fff",
+    "#ffffff"
+]
+
 parser.clearTags();
 
 parser.registerTag('url', {
@@ -22,7 +32,12 @@ parser.registerTag('email', {
 parser.registerTag('color', {
     type: 'replace',
     open: (attr) => {
-        return `<span style="color: ${(attr || "#000000").startsWith("--") ? `var(--fallback-${attr.replace("--", "")},oklch(var(${attr})/var(--tw-text-opacity)))` : (attr || "#000000")};">`
+        if (colorBlacklist.includes(attr) || attr == "") {
+            return `<span>`
+        } else {
+            return `<span style="color: ${(attr || "#000000").startsWith("--") ? `var(--fallback-${attr.replace("--", "")},oklch(var(${attr})/var(--tw-text-opacity)))` : (attr || "#000000")};">`
+        }
+        
     },
     close: () => '</span>',
 });
