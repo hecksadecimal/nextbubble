@@ -3,10 +3,12 @@
 import { ChangeEvent, FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import { api } from "@/trpc/react";
-import { bbencode } from "@/lib/bbcode.js";
+import { parser } from "@/lib/bbcode";
 import { useThrottledIsTypingMutation, useWhoIsTyping } from "@/app/(chat)/chat/[chat]/hooks";
 import React from "react";
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
+import BBCodeView from "../BBCode/BBCode";
+import { MessageType } from "@prisma/client";
 
 export function ChannelInput({ channel }: { channel: string }) {
     const currentlyTyping = useWhoIsTyping(channel);
@@ -18,8 +20,6 @@ export function ChannelInput({ channel }: { channel: string }) {
     const inputRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [inputHtml, setInputHtml] = useState({html: ""})
-
-    const bbcodeContent = useMemo(() => bbencode(content, false), [content])
     
     const createPost = api.message.add.useMutation({
         onSuccess: async () => {
@@ -36,7 +36,7 @@ export function ChannelInput({ channel }: { channel: string }) {
 
     function change(event: ContentEditableEvent) {
         setInputHtml({html: event.target.value})
-        setContent(event.target.value)
+        setContent(event.target.value.replaceAll("<br>", "\n").replaceAll('&nbsp;', " ").trim())
         isTypingMutation(true)
     }
 
@@ -50,8 +50,7 @@ export function ChannelInput({ channel }: { channel: string }) {
     return (
         <>
         <div className="w-full min-h-4 max-h-24 overflow-y-auto my-2 ml-4 pb-2">
-            <p className="text-sm" ref={bbcodePreviewRef} dangerouslySetInnerHTML={{__html: bbcodeContent ?? ""}}>
-            </p>
+            <BBCodeView content={content} />
         </div>
         <div className="w-full">
             <form
@@ -59,7 +58,7 @@ export function ChannelInput({ channel }: { channel: string }) {
                     e.preventDefault();
                     let target = document.getElementById("channelInput") as HTMLDivElement
                     createPost.mutate({
-                        text: target.innerHTML.replaceAll("<br>", "\n").trim(),
+                        text: target.innerHTML.replaceAll("<br>", "\n").replaceAll('&nbsp;', " ").trim(),
                         channelId: channel
                     });
                 }}
