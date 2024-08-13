@@ -13,6 +13,7 @@ export function ChannelSettings({ channel, channelAccount }: { channel: string, 
     let [color, setColor] = useState(channelAccount.color ?? "")
     let [prefix, setPrefix] = useState(channelAccount.prefix ?? "")
     let [suffix, setSuffix] = useState(channelAccount.suffix ?? "")
+    let [replacements, setReplacements] = useState(JSON.stringify(channelAccount.replacements) ?? "[[]]")
 
     const utils = api.useUtils();
 
@@ -46,7 +47,8 @@ export function ChannelSettings({ channel, channelAccount }: { channel: string, 
                                 acronym,
                                 color,
                                 prefix,
-                                suffix
+                                suffix,
+                                replacements: JSON.parse(replacements) as string[][]
                             });
                         }}
                     >
@@ -70,6 +72,10 @@ export function ChannelSettings({ channel, channelAccount }: { channel: string, 
                         <label className="input input-bordered rounded-box flex items-center gap-2 bg-base-300">
                             <input type="text" name="suffix" className="grow border-0 border-transparent focus:border-transparent focus:ring-0" placeholder="" onChange={e => setSuffix(e.target.value)} value={suffix} />
                             Suffix
+                        </label>
+                        <label className="input input-bordered rounded-box flex items-center gap-2 bg-base-300">
+                            <input type="text" name="replacements" className="grow border-0 border-transparent focus:border-transparent focus:ring-0" placeholder="" onChange={e => setReplacements(e.target.value)} value={replacements} />
+                            Replacements
                         </label>
                         <button type="submit" className="btn btn-primary">Save</button>
                     </form>
