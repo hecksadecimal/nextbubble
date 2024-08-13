@@ -91,13 +91,13 @@ export default async function Page({ params }: { params: { chat: string } }) {
     const messages = await api.message.getLastFifty({ channel: params.chat });
 
     return (
-        <main className="flex flex-row w-full max-h-screen">
+        <main className="flex flex-row w-full max-w-screen max-h-screen overflow-x-hidden">
             <div className="grow">
-                <div className="flex bg-base-300/50">              
-                    <div className="flex-grow text-base-content h-screen p-2 rounded-box">
+                <div className="flex bg-base-300/50 gap-2">              
+                    <div className="flex-grow text-base-content h-screen w-screen p-2 md:pr-80 rounded-box">
                         <Messages messages={messages} channel={params.chat} userQuirk={quirk}/>
                     </div>
-                    <div className="w-80 bg-base-300/50 text-base-content p-2 hidden md:block">
+                    <div className="w-80 bg-base-300/50 text-base-content p-2 hidden md:block md:-ml-80">
                         <div className="h-full overflow-y-auto max-h-screen">
                             <ThemeSwitch />
                             <div className="text-xl font-extrabold p-3">{params.chat}</div>

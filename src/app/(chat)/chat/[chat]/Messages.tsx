@@ -55,8 +55,8 @@ const Messages = ({ messages, channel, userQuirk }: { messages: Message[], chann
     }, [livePosts])
 
     return (
-        <div className="grow h-full flex flex-col">
-            <div id="messagesContainer" ref={containerRef} className="grow bg-base-300/50 p-2 overflow-y-auto rounded-box rounded-br-none rounded-bl-none">
+        <div className="grow h-full w-full max-w-full flex flex-col">
+            <div id="messagesContainer" ref={containerRef} className="grow max-w-full w-full bg-base-300/50 p-2 overflow-y-auto rounded-box rounded-br-none rounded-bl-none">
                 <div>
                     <button
                         disabled={
@@ -75,7 +75,7 @@ const Messages = ({ messages, channel, userQuirk }: { messages: Message[], chann
                     </button>
                 </div>
                 {livePosts.messages?.map((item) => {
-                    return <div ref={scrollRef} key={item.id} className="flex max-w-full break-words" >
+                    return <div ref={scrollRef} key={item.id} className="flex max-w-[100%] w-[100%] overflow-hidden break-all" >
                         <MessageView message={item} />
                     </div>
                 })}

@@ -33,9 +33,9 @@ parser.registerTag('color', {
     type: 'replace',
     open: (attr) => {
         if (colorBlacklist.includes(attr) || attr == "") {
-            return `<span>`
+            return `<span class="[overflow-wrap:anywhere] w-full max-w-full">`
         } else {
-            return `<span style="color: ${(attr || "#000000").startsWith("--") ? `var(--fallback-${attr.replace("--", "")},oklch(var(${attr})/var(--tw-text-opacity)))` : (attr || "#000000")};">`
+            return `<span class="[overflow-wrap:anywhere] w-full max-w-full inline-block" style="color: ${(attr || "#000000").startsWith("--") ? `var(--fallback-${attr.replace("--", "")},oklch(var(${attr})/var(--tw-text-opacity)))` : (attr || "#000000")};">`
         }
         
     },
