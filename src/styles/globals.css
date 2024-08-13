@@ -45,3 +45,11 @@
       transform: none;
     }
 }
+
+::-webkit-color-swatch{
+    border: none;
+}
+
+::-moz-color-swatch{
+    border: none;
+}

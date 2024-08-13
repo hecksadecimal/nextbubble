@@ -8,10 +8,10 @@ import { useThrottledIsTypingMutation, useWhoIsTyping } from "@/app/(chat)/chat/
 import React from "react";
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import BBCodeView from "../BBCode/BBCode";
-import { MessageType } from "@prisma/client";
+import { ChannelAccount, MessageType } from "@prisma/client";
 import { Quirk } from "@/lib/quirk";
 
-export function ChannelInput({ channel, quirk }: { channel: string, quirk?: Quirk }) {
+export function ChannelInput({ channel }: { channel: string}) {
     const currentlyTyping = useWhoIsTyping(channel);
     const isTypingMutation = useThrottledIsTypingMutation(channel);
     
@@ -21,6 +21,20 @@ export function ChannelInput({ channel, quirk }: { channel: string, quirk?: Quir
     const inputRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [inputHtml, setInputHtml] = useState({html: ""})
+
+    var channelAccountQuery = api.channelAccount.get.useQuery({
+        channel
+    })
+
+    const channelAccount = channelAccountQuery.data
+
+    const quirk: Quirk = {
+        acronym: channelAccount?.acronym ?? undefined,
+        color: channelAccount?.color ?? undefined,
+        prefix: channelAccount?.prefix ?? undefined,
+        suffix: channelAccount?.suffix ?? undefined,
+        replacements: channelAccount?.replacements as [[string, string]] ?? undefined
+    }
     
     const createPost = api.message.add.useMutation({
         onSuccess: async () => {

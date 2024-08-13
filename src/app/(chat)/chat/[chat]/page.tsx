@@ -11,6 +11,7 @@ import { UserButton } from "@clerk/nextjs";
 import ClientUserButton from "./ClientUserButton";
 import ThemeSwitch from "@/app/_components/client/ThemeSwitch";
 import { Quirk } from "@/lib/quirk";
+import { ChannelSettings } from "@/app/_components/client/ChannelSettings";
 
 export default async function Page({ params }: { params: { chat: string } }) {
     let session = await currentUser();
@@ -44,8 +45,8 @@ export default async function Page({ params }: { params: { chat: string } }) {
         })
     }
 
-    var channelAccount = await db.channelAccount.findFirst({
-        where: {channelId: params.chat, accountId: session.id}
+    var channelAccount = await api.channelAccount.get({
+        channel: params.chat
     })
 
     if (!channelAccount) {
@@ -70,6 +71,11 @@ export default async function Page({ params }: { params: { chat: string } }) {
                 identifier: latestChatAccount ? latestChatAccount.identifier + 1 : 0
             }
         })
+
+        channelAccount = await api.channelAccount.get({
+            channel: params.chat
+        })
+        channelAccount = channelAccount!;
     }
 
     const quirk: Quirk = {
@@ -95,11 +101,11 @@ export default async function Page({ params }: { params: { chat: string } }) {
             <div className="grow">
                 <div className="flex bg-base-300/50 gap-2">              
                     <div className="flex-grow text-base-content h-screen w-screen p-2 md:pr-80 rounded-box">
-                        <Messages messages={messages} channel={params.chat} userQuirk={quirk}/>
+                        <Messages messages={messages} channel={params.chat} channelAccount={channelAccount} />
                     </div>
                     <div className="w-80 bg-base-300/50 text-base-content p-2 hidden md:block md:-ml-80">
                         <div className="h-full overflow-y-auto max-h-screen">
-                            <ThemeSwitch />
+                            <ChannelSettings channel={params.chat} channelAccount={channelAccount} />
                             <div className="text-xl font-extrabold p-3">{params.chat}</div>
                             <div className="text-lg font-semibol p-3">Active Users</div>
                             <Sidebar channelAccounts={allChannelAccounts}/>

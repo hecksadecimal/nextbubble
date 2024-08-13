@@ -23,6 +23,7 @@ export type Quirk = {
 
 export const applyQuirk = (text: string, quirk: Quirk) => {
     var character = quirk;
+    console.log(character)
     if (!quirk.prefix) {
         quirk.prefix = ""
     }
@@ -230,5 +231,5 @@ export const applyQuirk = (text: string, quirk: Quirk) => {
         }
     }
 
-    return `[color=${quirk.color ? quirk.color : "--bc"}]${final_text}[/color]`;
+    return `[color=${quirk.color ? quirk.color : "--bc"}]${quirk.acronym ? quirk.acronym + ": " : ""}${final_text}[/color]`;
 }

@@ -1,7 +1,6 @@
 import { z } from "zod";
 import EventEmitter, { on } from 'node:events';
 import { redis } from "@/server/db";
-import { sse } from '@trpc/server';
 
 import {
   createTRPCRouter,

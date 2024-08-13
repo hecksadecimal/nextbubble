@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react'
-import { Message, MessageType } from "@prisma/client";
+import { ChannelAccount, Message, MessageType } from "@prisma/client";
 import { ChannelInput } from '@/app/_components/client/ChannelInput';
 import { api } from "@/trpc/react";
 import {
@@ -29,7 +29,7 @@ const listWithAnd = (list: string[]) => {
     return `${list.slice(0, -1).join(', ')}, and ${list.at(-1)}`;
 };
 
-const Messages = ({ messages, channel, userQuirk }: { messages: Message[], channel: string, userQuirk?: Quirk }) => {
+const Messages = ({ messages, channel, channelAccount }: { messages: Message[], channel: string, channelAccount?: ChannelAccount }) => {
     const livePosts = useLivePosts(channel);
     const currentlyTyping = useWhoIsTyping(channel);
     const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -91,9 +91,11 @@ const Messages = ({ messages, channel, userQuirk }: { messages: Message[], chann
                 <>&nbsp;</>
               )}
             </p>
-            <div className="h-15 p-3 rounded-box bg-base-300/50">
-                <ChannelInput channel={channel} quirk={userQuirk} />
-            </div>
+            {channelAccount && 
+                <div className="h-15 p-3 rounded-box bg-base-300/50">
+                    <ChannelInput channel={channel} />
+                </div>
+            }
         </div>
     )
 }

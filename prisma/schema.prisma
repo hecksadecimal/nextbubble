@@ -67,6 +67,7 @@ model ChannelAccount {
   identifier  Int
   characterId String
 
+  name         String?
   acronym      String?
   color        String?
   prefix       String?
