@@ -47,13 +47,34 @@ model Message {
   account Account? @relation(fields: [accountId], references: [id])
 }
 
+model Announcement {
+  id        String @id @default(cuid())
+  title     String
+  content   String
+  accountId String
+
+  account Account @relation(fields: [accountId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum AccountType {
+  USER
+  ADMIN
+}
+
 model Account {
   id String @id
+
+  type AccountType @default(USER)
 
   defaultCharacterId String?
   defaultCharacter   Character? @relation("DefaultCharacter", fields: [defaultCharacterId], references: [id])
 
   theme Json?
+
+  pushAnnouncements Boolean @default(true)
 
   channelAccounts    ChannelAccount[]
   messages           Message[]
@@ -62,6 +83,8 @@ model Account {
   preparedCharacters PreparedCharacter[]
 
   PushSubscription PushSubscription[]
+
+  Announcement Announcement[]
 }
 
 model PushSubscription {

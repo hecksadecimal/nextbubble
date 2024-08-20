@@ -50,7 +50,7 @@ export const accountRouter = createTRPCRouter({
             });
         }),
 
-    getSubscriptions: protectedProcedure
+    getPushSubscriptions: protectedProcedure
         .query(async ({ ctx }) => {
             let account = await ctx.db.account.findFirstOrThrow({
                 where: {
@@ -79,6 +79,26 @@ export const accountRouter = createTRPCRouter({
             });
         }),
 
+    setPushAnnouncements: protectedProcedure
+        .input(z.object({value: z.boolean()}))
+        .mutation(async ({ ctx, input }) => {
+            let account = await ctx.db.account.findFirstOrThrow({
+                where: {
+                    id: ctx.session.id,
+                },
+            });
+
+            await ctx.db.account.update({
+                where: {
+                    id: account.id,
+                },
+                data: {
+                    pushAnnouncements: input.value,
+                },
+            });
+        }),
+
+
     testPushSubscription: protectedProcedure
         .mutation(async ({ ctx }) => {
             let account = await ctx.db.account.findFirstOrThrow({
@@ -97,6 +117,7 @@ export const accountRouter = createTRPCRouter({
                 const payload = JSON.stringify({
                     title: 'WebPush Notification!',
                     body: 'Hello World',
+                    tag: 'test',
                 })
                 const subscriptionData: PushSubscription = {
                     endpoint: subscription.endpoint,

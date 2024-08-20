@@ -13,6 +13,7 @@ import { ZodError } from "zod";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/server/db";
+import { AccountType } from "@prisma/client";
 
 /**
  * 1. CONTEXT
@@ -28,10 +29,16 @@ import { db } from "@/server/db";
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await currentUser();
+  const account = await db.account.findFirst({
+    where: {
+      id: session?.id,
+    },
+  })
 
   return {
     db,
     session,
+    account,
     ...opts,
   };
 };
@@ -122,13 +129,28 @@ export const publicProcedure = t.procedure.use(({ ctx, next }) => {
  */
 export const protectedProcedure = t.procedure
   .use(({ ctx, next }) => {
-    if (!ctx.session || !ctx.session.username) {
+    if (!ctx.account || !ctx.session || !ctx.session.username) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
     return next({
       ctx: {
         // infers the `session` as non-nullable
         session: { ...ctx.session, user: ctx.session.username },
+        account: { ...ctx.account },
+      },
+    });
+  });
+
+export const adminProcedure = t.procedure
+  .use(({ ctx, next }) => {
+    if (!ctx.account || !ctx.session || ctx.account.type != AccountType.ADMIN) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.username },
+        account: { ...ctx.account },
       },
     });
   });

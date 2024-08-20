@@ -10,12 +10,12 @@ import sha1 from "simple-sha1";
 const Notifications = () => {
     const addSubscriptionMutation = api.account.addPushSubscription.useMutation({
         onSuccess: async () => {
-            await utils.account.getSubscriptions.invalidate();
+            await utils.account.getPushSubscriptions.invalidate();
         },
     });
     const deleteSubscriptionMutation = api.account.deletePushSubscription.useMutation({
         onSuccess: async () => {
-            await utils.account.getSubscriptions.invalidate();
+            await utils.account.getPushSubscriptions.invalidate();
         },
     });
     const testSubscriptionMutation = api.account.testPushSubscription.useMutation();
@@ -23,7 +23,7 @@ const Notifications = () => {
     const utils = api.useUtils();
     const [cookies, setCookies] = useState<any>();
     const [identifier, setIdentifier] = useState("");
-    const subscriptions = api.account.getSubscriptions.useQuery().data;
+    const subscriptions = api.account.getPushSubscriptions.useQuery().data;
 
 
     const notificationsSupported = () =>

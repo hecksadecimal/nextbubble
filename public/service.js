@@ -3,13 +3,25 @@
 self.addEventListener('push', async (event) => {
     if (event.data) {
         const eventData = await event.data.json()
-        showLocalNotification(eventData.title, eventData.body, self.registration)
+        console.log(eventData)
+        showLocalNotification(eventData.title, eventData.body, eventData.url, eventData.tag, self.registration)
     }
 })
 
-const showLocalNotification = (title, body, swRegistration) => {
+self.addEventListener('notificationclick', function (event) {
+    event.notification.close();
+    event.waitUntil(
+        clients.openWindow(event.notification.data.url)
+    );
+})
+
+const showLocalNotification = (title, body, url, tag, swRegistration) => {
     swRegistration.showNotification(title, {
         body,
+        tag,
         icon: '/static/icons/icon-192x192.png',
+        data: {
+            url: url
+        }
     })
 }
