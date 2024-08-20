@@ -14,7 +14,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode, params: { chat: string } }>) {
     return (
         <div className="flex flex-col h-screen">
-            <div className="grow flex bg-gradient-to-b from-base-300 to-base-100 text-white">
+            <div className="grow flex bg-gradient-to-b from-base-300 to-base-100 bg-theme text-white">
                 {children}
             </div>
         </div>

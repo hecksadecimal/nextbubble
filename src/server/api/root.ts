@@ -2,6 +2,7 @@ import { messageRouter } from "@/server/api/routers/message";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 import { channelRouter } from "./routers/channel";
 import { channelAccountRouter } from "./routers/channelAccount";
+import { accountRouter } from "./routers/account";
 
 /**
  * This is the primary router for your server.
@@ -12,6 +13,7 @@ export const appRouter = createTRPCRouter({
   channel: channelRouter,
   message: messageRouter,
   channelAccount: channelAccountRouter,
+  account: accountRouter,
 });
 
 // export type definition of API

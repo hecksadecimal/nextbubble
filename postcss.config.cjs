@@ -1,7 +1,8 @@
 const config = {
-  plugins: {
-    tailwindcss: {},
-  },
+  plugins: [
+    'tailwindcss',
+    'postcss-plugin-ignore-file'
+  ]
 };
 
 module.exports = config;

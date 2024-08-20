@@ -53,11 +53,33 @@ model Account {
   defaultCharacterId String?
   defaultCharacter   Character? @relation("DefaultCharacter", fields: [defaultCharacterId], references: [id])
 
+  theme Json?
+
   channelAccounts    ChannelAccount[]
   messages           Message[]
   createdChannels    Channel[]
   createdCharacters  Character[]         @relation("Created")
   preparedCharacters PreparedCharacter[]
+
+  PushSubscription PushSubscription[]
+}
+
+model PushSubscription {
+  id String @id @default(cuid())
+
+  endpoint   String @unique
+  p256dh     String
+  auth       String
+  identifier String
+
+  accountId String
+  account   Account @relation(fields: [accountId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([accountId, identifier])
+  @@index([accountId, identifier])
 }
 
 model ChannelAccount {

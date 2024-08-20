@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react'
 import { useTheme } from 'next-themes'
 
-const ThemeSwitch = () => {
+const ThemeSwitch = ({className}: {className?: string}) => {
     const [mounted, setMounted] = useState(false)
     const { theme, setTheme } = useTheme()
 
     const themeList = [
         "msparp",
         "msdark",
+        "felt",
         "light",
         "dark",
         "darkpurble",
@@ -55,10 +56,10 @@ const ThemeSwitch = () => {
     }
 
     return (
-        <div tabIndex={0} className="bg-base-300 text-base-content rounded-box max-h-32 h-32 top-px w-full input-bordered overflow-y-auto border">
+        <div tabIndex={0} className={className}>
             <div className="grid grid-cols-1 gap-3 p-3">
                 {themeList.map((value) => {
-                    return <button key={value} className="outline-base-content text-start outline-offset-4" data-act-className="[&amp;_svg]:visible" data-set-theme={value} onClick={() => setTheme(value)}>
+                    return <button key={value} className="outline-base-content text-start outline-offset-4" data-act-class="[&amp;_svg]:visible" data-set-theme={value} onClick={() => setTheme(value)}>
                         <span className="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans" data-theme={value}>
                             <span className="grid grid-cols-5 grid-rows-3">
                                 <span className="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3">

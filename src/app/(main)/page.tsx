@@ -7,21 +7,14 @@ import { db } from "@/server/db";
 
 export default async function Home() {
   const session = await currentUser();
-  const channels = await db.channel.findMany({
-    orderBy: {updatedAt: "desc"}
-  });
 
   return (
-    <HydrateClient>
-      <main className="flex flex-col grow">
-        <div className="flex flex-wrap">
-        {channels.map((channel) => {
-          return <div>
-            {channel.id}
-          </div>
-        })}
-        </div>
-      </main>
-    </HydrateClient>
+    <main className="flex flex-col grow">
+      <div className="flex flex-wrap">
+        {session &&
+          <small>{session.id}</small>  
+        }
+      </div>
+    </main>
   );
 }

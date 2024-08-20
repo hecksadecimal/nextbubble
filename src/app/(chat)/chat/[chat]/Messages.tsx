@@ -59,6 +59,7 @@ const Messages = ({ messages, channel, channelAccount }: { messages: Message[], 
             <div id="messagesContainer" ref={containerRef} className="grow max-w-full w-full bg-base-300/50 p-2 overflow-y-auto rounded-box rounded-br-none rounded-bl-none">
                 <div>
                     <button
+                        className="mt-10 md:mt-0"
                         disabled={
                             !livePosts.query.hasNextPage ||
                             livePosts.query.isFetchingNextPage

@@ -22,7 +22,8 @@ export const env = createEnv({
       (str) => process.env.VERCEL_URL ?? str,
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string() : z.string().url()
-    )
+    ),
+    VAPID_PRIVATE_KEY: z.string(),
   },
 
   /**
@@ -32,6 +33,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_VAPID_PUBLISHABLE_KEY: z.string()
   },
 
   /**
@@ -43,7 +45,9 @@ export const env = createEnv({
     REDIS_URL: process.env.REDIS_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
+    NEXT_PUBLIC_VAPID_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLISHABLE_KEY
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
