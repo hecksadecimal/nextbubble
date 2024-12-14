@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid(7))
+  username String
+  passwordHash String
+  createdAt DateTime @default(now())
+  dateOfBirth DateTime
+
+  sessions Session[]
+  chats ChatUser[]
+  messages Message[]
+  ownedChats Chat[]
+
+  @@unique([username])
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model Chat {
+  id String @id @default(uuid(7))
+  url String
+  ownerId String
+  createdAt DateTime @default(now())
+
+  owner User @relation(fields: [ownerId], references: [id])
+  chatUsers ChatUser[]
+  messages Message[]
+  permissions ChatPermission[]
+
+  @@unique([url])
+}
+
+model ChatUser {
+  id String @id @default(uuid(7))
+  
+  permissionid String
+  chatId String
+  userId String
+  number Int
+  createdAt DateTime @default(now())
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission ChatPermission @relation(fields: [permissionid], references: [id])
+
+  @@unique([chatId, userId])
+  @@unique([chatId, number])
+}
+
+model ChatPermission {
+  id String @id @default(uuid(7))
+  name String
+  value Int @default(0)
+  system Boolean @default(false)
+  
+  chatUsers ChatUser[]
+  chat Chat[]
+}
+
+model Message {
+  id String @id @default(uuid(7))
+  chatId String
+  userId String
+  content String
+  originalContent String
+  createdAt DateTime
+  modifiedAt DateTime @default(now())
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
