@@ -28,11 +28,9 @@ export default async function RootLayout({
   return (
     <html lang="en" data-theme="light">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-600`}
       >
-        <div id="container" className="">
-          {children}
-        </div>
+        {children}
       </body>
     </html>
   );
