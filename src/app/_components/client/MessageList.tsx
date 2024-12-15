@@ -7,7 +7,7 @@ export default function MessageList({ messages }: { messages: MessageSchema[] })
     const ref = useRef<HTMLTableSectionElement>(null);
     useEffect(() => {
         if (!ref) return;
-        //setup(ref.current as HTMLElement);
+        setup(ref.current as HTMLElement);
     }, [ref]);
 
     return (
