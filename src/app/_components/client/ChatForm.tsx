@@ -23,14 +23,14 @@ export default function ChatForm() {
     }, [preview]);
 
     return (
-        <form id="controls" action={async (data: FormData) => {
+        <form className="flex flex-col" action={async (data: FormData) => {
             // Send message to server
         }}>
-            <div id="preview" className="min-h-full" ref={previewRef}>&nbsp;</div>
-            <div className="flex w-full">
-                <input type="text" className="grow w-full -mx-[3px]" autoComplete="false" value={message} onChange={(e) => setMessage(e.target.value)}/>
+            <div id="preview" className="input input-xs m-1" ref={previewRef}>&nbsp;</div>
+            <div className="flex m-1">
+                <input type="text" className="grow input input-xs" autoComplete="false" value={message} onChange={(e) => setMessage(e.target.value)}/>
+                <button type="submit" className="btn btn-xs ml-1">Send</button>
             </div>
-            <button type="submit">Send</button>
         </form>
     );
 }

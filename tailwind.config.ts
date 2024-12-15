@@ -13,6 +13,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      extend: {
+        backgroundColor: ['even'],
+      },
     },
   },
   plugins: [daisyui],

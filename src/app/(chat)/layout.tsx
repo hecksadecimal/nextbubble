@@ -26,9 +26,9 @@ export default async function RootLayout({
   const { user } = await getCurrentSession();
   
   return (
-    <html lang="en" data-theme="light">
+    <html lang="en" data-theme="light" className="min-h-screen flex flex-col">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-600`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-full grow overflow-hidden m-2`}
       >
         {children}
       </body>
