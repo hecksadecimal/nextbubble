@@ -1,3 +1,4 @@
+'use client';
 import chroma from "chroma-js"
 import { RefObject, useRef } from 'react';
 
@@ -35,7 +36,7 @@ function getInheritedTextColor(el: HTMLElement) {
     var color = window.getComputedStyle(el).color
     if (color != defaultStyle) return color
     if (!el.parentElement) return defaultStyle
-    return getInheritedTextColor(el)
+    return getInheritedTextColor(el.parentElement)
 }
 
 function getInheritedBackgroundColor(el: HTMLElement) {
@@ -45,6 +46,7 @@ function getInheritedBackgroundColor(el: HTMLElement) {
     if (!el.parentElement) return defaultStyle
     return getInheritedBackgroundColor(el.parentElement)
 }
+
 
 function getDefaultTextColor() {
     var div = document.createElement("div")
@@ -62,12 +64,33 @@ function getDefaultBackground() {
     return bg
 }
 
-function resetColours(el: HTMLElement) {
+export function resetAllColours(el: HTMLElement) {
+    let elems = el.querySelectorAll("*")
+    for (let el of elems) {
+        resetColours(el as HTMLElement)
+    }
+}
+
+export function resetColours(el: HTMLElement) {
     if (el.originalcolor) {
+        if (el.style.color === el.originalcolor) {
+            return
+        }
         el.style.color = el.originalcolor
     } else {
         el.style.color = ""
     }
+}
+
+export function recompute(el: HTMLElement) {
+    el.computeColours()
+}
+
+export function resetAndRecompute(el: HTMLElement, delay: number) {
+    resetAllColours(el)
+    window.setTimeout(() => {
+        el.computeColours()
+    }, delay)
 }
 
 export function setup(element: HTMLElement, slider?: HTMLInputElement) {
@@ -116,13 +139,15 @@ function saveColours(el: HTMLElement) {
     for (let el of elems) {
         const elem = el as HTMLElement
         if (elem.style.color) {
-            elem.originalcolor = elem.style.color
+            if (!elem.originalcolor) {
+                elem.originalcolor = elem.style.color
+            }
         }
     }
 }
 
 function computeColours(el: HTMLElement) {
-    var minContrast = 3.0
+    var minContrast = 1.5
     if (window.localStorage) {
         var val = window.localStorage.getItem("minimum_contrast")
         var floatVal = minContrast
@@ -144,7 +169,7 @@ function computeColours(el: HTMLElement) {
         }
         Promise.resolve()
             .then(() => resetColours(elRef))
-            .then(() => delay(250))
+            .then(() => delay(500))
             .then(() => {
                 let color = cssColorToRGBA(getInheritedTextColor(elRef))
                 let ch = chroma.rgb(color[0], color[1], color[2], color[3])
