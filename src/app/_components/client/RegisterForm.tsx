@@ -55,7 +55,7 @@ export default function RegisterForm() {
     }
 
     return (
-        <div className="w-full">
+        <div className="w-full bg-base-200 text-base-content placeholder-neutral-content p-4 pb-16">
             <h1>Register</h1>
             <form action={async (data: FormData) => {
                 if (!handleValidation()) {
@@ -68,25 +68,25 @@ export default function RegisterForm() {
                 <label className="form-control w-full">
                     <input type="text" name="username" placeholder="Username" className="input input-bordered w-full" onChangeCapture={e => setUsername(e.currentTarget.value)} />
                     <div className="label">
-                        {errors.username && <span className="label-text-alt text-red-500">{errors.username}</span>}
+                        {errors.username && <span className="label-text-alt text-error">{errors.username}</span>}
                     </div>
                 </label>
                 <label className="form-control w-full">
                     <input type="password" name="password" placeholder="Password" className="input input-bordered w-full" onChangeCapture={e => setPassword(e.currentTarget.value)} />
                     <div className="label">
-                        {errors.password && <span className="label-text-alt text-red-500">{errors.password}</span>}
+                        {errors.password && <span className="label-text-alt text-error">{errors.password}</span>}
                     </div>
                 </label>
                 <label className="form-control w-full">
                     <input type="password" name="passwordConfirm" placeholder="Confirm Password" className="input input-bordered w-full" onChangeCapture={e => setPasswordConfirm(e.currentTarget.value)} />
                     <div className="label">
-                        {errors.passwordConfirm && <span className="label-text-alt text-red-500">{errors.passwordConfirm}</span>}
+                        {errors.passwordConfirm && <span className="label-text-alt text-error">{errors.passwordConfirm}</span>}
                     </div>
                 </label>
                 <label className="form-control w-full">
                     <input type="date" name="dateOfBirth" className="input input-bordered w-full" onChangeCapture={e => setDateOfBirth(e.currentTarget.value)} />
                     <div className="label">
-                        {errors.dateOfBirth && <span className="label-text-alt text-red-500">{errors.dateOfBirth}</span>}
+                        {errors.dateOfBirth && <span className="label-text-alt text-error">{errors.dateOfBirth}</span>}
                     </div>
                 </label>
                 <button className="btn float-end" type="submit" disabled={anyErrors || pending}>Register</button>

@@ -425,7 +425,7 @@ export const characters: { [key: string]: Character } = {
         'quote': "really, 1 thought 1t would be alr1ght, just flapp1ng w1ngs around... 1 could st1ll fly and just hang there l1mp... m1ght have been a dope look!",
         'quirk': {
             'case': 'lower',
-            'replacements': [["i", "1"], ["/(^|\\s)ass(\\W|$)/", "$1*ss$2"], ["/(^|\\s)cripple(\\W|$)/", "$1cr*pple$2"], ["damn", "d*mn"], ["/(^|\\s)fuck1ng(\\W|$)/", "$1f***1ng$2"], ["fuck", "f*ck"], ["/(^|\\s)hell(\\W|$)/", "$1h*ll$2"], ["/(^|\\s)mutant(\\W|$)/", "$1m*tant$2"], ["/(^|\\s)sh1t(\\W|$)/", "$1sh*t$2"], ["/[\\s|^|}](:O)/", "$L"], ["/[\\s|^|}](:[dp])/", "$U"]],
+            'replacements': [["i", "1"], ["/(^|\\s)ass(\\W|$)/", "$1*ss$2"], ["/(^|\\s)cripple(\\W|$)/", "$1cr*pple$2"], ["damn", "d*mn"], ["/(^|\\s)fuck1ng(\\W|$)/", "$1f***1ng$2"], ["fuck", "f*ck"], ["/(^|\\s)hell(\\W|$)/", "$1h*ll$2"], ["/(^|\\s)mutant(\\W|$)/", "$1m*tant$2"], ["/(^|\\s)sh1t(\\W|$)/", "$1sh*t$2"], ["/[\\s|^|}](:O)/", "$L"]],
             'prefix': '',
             'suffix': ''
         }

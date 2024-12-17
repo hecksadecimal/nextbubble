@@ -2,9 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-body, button, input, select, optgroup, option {
+body,
+button,
+input,
+select,
+optgroup,
+option {
 	font-family: "Courier", monospace;
 	font-size: 12px;
 	font-weight: bold;
 }
 
+@font-face {
+	font-family: "Bone";
+	src: url("/fonts/BONEAPA.TTF");
+	font-weight: normal;
+	/* Regular weight, typically 400 */
+}
+
+.chat-bubble-base-300 {
+    --tw-bg-opacity: 1;
+    @apply bg-base-300;
+    --tw-text-opacity: 1;
+	color: currentColor;
+}

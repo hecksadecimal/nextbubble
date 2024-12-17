@@ -1,10 +1,11 @@
 'use client';
+import { UIEvent, UIEventHandler, useEffect, useRef, useState } from "react"
+import { faker } from "@faker-js/faker";
 import ChatForm from "@/app/_components/client/ChatForm"
 import Message, { MessageSchema } from "@/app/_components/shared/Message"
 import { characters } from "@/lib/shared/homestuck";
 import MessageList from "@/app/_components/client/MessageList"
 import { useParams } from "next/navigation";
-import { UIEvent, UIEventHandler, useEffect, useRef, useState } from "react"
 import { DBBCode } from "@/app/_components/shared/DBBCode";
 
 export default function Page({
@@ -56,11 +57,25 @@ export default function Page({
     bbcodeTestString += "[email]test@example.com[/email]\n"
     bbcodeTestString += "[pad]Padded[/pad]\n"
     bbcodeTestString += "[spoiler]Snape kills dumbledore[/spoiler]\n"
-    bbcodeTestString += "[font=Arial]Arial[/font]\n"
+    bbcodeTestString += "[font=Arial]Font[/font]\n"
     bbcodeTestString += "[color=#ff0000]Red[/color]\n"
     bbcodeTestString += "[color=green]Green[/color]\n"
     bbcodeTestString += "[color=rgb(0,0,255)]Blue[/color]\n"
+    const gradient = "red,orange,yellow,green,blue,indigo,violet,rgba(0,0,0,0)"
+    const gradientLorem = faker.lorem.paragraphs(1)
+    bbcodeTestString += `[gradient=${gradient}]${gradientLorem}[/gradient]\n`
+    bbcodeTestString += `[gradient=${gradient}][spoiler]${gradientLorem}[/spoiler][/gradient]\n`
+    bbcodeTestString += `[spoiler][gradient=${gradient}]${gradientLorem}[/gradient][/spoiler]\n`
+    bbcodeTestString += "[bone]Bone[/bone]\n"
     bbcodeTestString += "[b][i][u][s]All[/s][/u][/i][/b]\n"
+    bbcodeTestString += "[div]Divider with title[/div]\n"
+    bbcodeTestString += "[tooltip='hello_world!']Tooltip[/tooltip]\n"
+    bbcodeTestString += `[div][gradient=${gradient}]Rainbow Divider[/gradient][/div]\n`
+    bbcodeTestString += `[modal buttonText=Rules][div]RULES[/div][br][gradient=${gradient}]Be Kind[/gradient][/modal]\n`
+    // 5 minutes from now
+    //bbcodeTestString += `[countdown=${new Date(Date.now() + 5 * 60000).toISOString()}]\n`
+    bbcodeTestString += "[bubble]Bubble[/bubble]\n"
+    bbcodeTestString += "[bubble_r]Bubble Right[/bubble_r]\n"
     return bbcodeTestString
   }
   
@@ -69,9 +84,10 @@ export default function Page({
     const messages: MessageSchema[] = []
     let counter = 1
     for (const [key, value] of Object.entries(characters)) {
+      const lorem = faker.lorem.paragraphs(5)
       messages.push({
         id: counter,
-        content: "The quick brown fox jumps over the lazy dog.\n" + bbcodeTestString(),
+        content: `${lorem}\n${bbcodeTestString()}`.replaceAll('\n\n', '[br] [br]').replaceAll('\n', '[br]'),
         user: {
           id: counter,
           name: value.name,
