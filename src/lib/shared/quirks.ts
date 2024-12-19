@@ -40,8 +40,18 @@ export function quirkText(text: string, quirk: Quirk): string {
         // Normal strings will be replaced without regex
         quirk.replacements.forEach(([search, replace]) => {
             if (search.startsWith('/') && search.endsWith('/')) {
+                // If the replacement is $U, uppercase the match instead.
+                if (replace === "$U") {
+                    transformedText = transformedText.replace(new RegExp(search.slice(1, -1), 'g'), match => match.toUpperCase());
+                    return;
+                }
                 transformedText = transformedText.replace(new RegExp(search.slice(1, -1), 'g'), replace);
             } else {
+                // If the replacement is $U, uppercase the match instead.
+                if (replace === "$U") {
+                    transformedText = transformedText.split(search).map((part: string) => part.toUpperCase()).join('');
+                    return;
+                }
                 transformedText = transformedText.split(search).join(replace);
             }
         });
