@@ -12,7 +12,7 @@ export default function Modal({ children, title, buttonText }: { children: React
     return (
         <>
             <button className="btn" onClick={handleClick}>{buttonText ? buttonText : "open"}</button>
-                <dialog ref={modalRef} className="modal">
+            <dialog ref={modalRef} className="modal">
                 <div className="modal-box">
                     {title && <h3>{title}</h3>}
                     {children}

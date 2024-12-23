@@ -16,14 +16,27 @@ model User {
   username String
   passwordHash String
   createdAt DateTime @default(now())
+  globalPermissionId String?
   dateOfBirth DateTime
 
   sessions Session[]
   chats ChatUser[]
   messages Message[]
   ownedChats Chat[]
+  globalPermission GlobalPermission? @relation(fields: [globalPermissionId], references: [id])
 
   @@unique([username])
+}
+
+model GlobalPermission {
+  id String @id @default(uuid(7))
+  name String
+  value Int @default(0)
+  defaultChatPermissionId String
+
+  users User[]
+
+  defaultChatPermission ChatPermission @relation(fields: [defaultChatPermissionId], references: [id])
 }
 
 model Session {
@@ -32,6 +45,23 @@ model Session {
   expiresAt DateTime
 
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model Character {
+  id String @id @default(uuid(7))
+  acronym String?
+  name String
+  color String
+  quote String @default("some random text for previewing purposes")
+  quirk String @default("{}")
+  chatUsers ChatUser[]
+}
+
+model Tag {
+  id String @id @default(uuid(7))
+  name String
+  type String
+  polarity String
 }
 
 model Chat {
@@ -51,18 +81,22 @@ model Chat {
 model ChatUser {
   id String @id @default(uuid(7))
   
-  permissionid String
   chatId String
   userId String
+  characterId String
+  permissionId String
   number Int
   createdAt DateTime @default(now())
 
   chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  permission ChatPermission @relation(fields: [permissionid], references: [id])
+  character Character @relation(fields: [characterId], references: [id])
+  permission ChatPermission @relation(fields: [permissionId], references: [id])
 
   @@unique([chatId, userId])
   @@unique([chatId, number])
+  @@index([chatId, userId])
+  @@index([chatId, number])
 }
 
 model ChatPermission {
@@ -73,6 +107,7 @@ model ChatPermission {
   
   chatUsers ChatUser[]
   chat Chat[]
+  globalPermissions GlobalPermission[]
 }
 
 model Message {

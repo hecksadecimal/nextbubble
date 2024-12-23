@@ -3,7 +3,7 @@ import presetReact from '@bbob/preset-react';
 import { isStringNode, getUniqAttr, TagNode } from "@bbob/plugin-helper";
 import Spoiler from '../client/bbcode/Spoiler';
 import { Quirk, quirkText } from '@/lib/shared/quirks';
-import { BBobCoreTagNodeTree, TagNodeTree } from '@bbob/types';
+import { BBobCoreOptions, BBobCoreTagNodeTree, TagNodeTree } from '@bbob/types';
 import ToolTip from './bbcode/Tooltip';
 import Divider from './bbcode/Divider';
 import Modal from '../client/bbcode/Modal';
@@ -15,6 +15,16 @@ const toNode = (
   attrs: Record<string, unknown>,
   content?: TagNodeTree
 ) => TagNode.create(tag, attrs, content);
+
+const bbOptions: BBobCoreOptions = {
+  onlyAllowTags: ["quote", "spoiler", "tooltip", 
+                  "div", "modal", "countdown", 
+                  "bubble", "bubble_r", "email", 
+                  "pad", "color", "colour", "br",
+                  "c", "font", "bone", "gradient",
+                  "b", "i", "u", "s", "sub", "sup"],
+  enableEscapeTags: true
+}
 
 const preset = presetReact.extend((tags, options) => ({
   ...tags,
@@ -79,6 +89,16 @@ const preset = presetReact.extend((tags, options) => ({
     attrs: { style: { color: render(node.content) } },
     content: node.content
   }),
+  colour: (node, { render }) => ({
+    tag: "span",
+    attrs: { style: { color: render(node.content) } },
+    content: node.content
+  }),
+  c: (node, { render }) => ({
+    tag: "span",
+    attrs: { style: { color: render(node.content) } },
+    content: node.content
+  }),
   font: node => {
     const font = getUniqAttr(node.attrs);
     return {
@@ -106,7 +126,16 @@ const preset = presetReact.extend((tags, options) => ({
       },
       content: node.content
     };
-  }
+  },
+  b: node => {
+    return {
+      tag: "strong",
+      attrs: {
+        className: "font-black"
+      },
+      content: node.content
+    };
+  },
 }));
 
 
@@ -122,7 +151,7 @@ export function DBBCode({ children, quirk }: { children: React.ReactNode, quirk?
   };
 
   return (
-    <BBCode plugins={[preset(), quirkPlugin]}>
+    <BBCode plugins={[preset(), quirkPlugin]} options={bbOptions}>
       {children}
     </BBCode>
   )

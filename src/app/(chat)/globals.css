@@ -8,7 +8,7 @@ input,
 select,
 optgroup,
 option {
-	font-family: "Courier", monospace;
+	font-family: "Courier New", monospace;
 	font-size: 12px;
 	font-weight: bold;
 }
