@@ -1,13 +1,13 @@
 'use client';
 import { useMemo, useRef, useState } from 'react';
 import { DBBCode } from '../shared/DBBCode';
-import { Character } from '@/lib/shared/homestuck';
+import { Character, characters } from '@/lib/shared/homestuck';
+import { MessageSendSchema } from '../shared/Message';
 
-export default function ChatForm({character}: {character?: Character}) {
+export default function ChatForm({character, sendHandler}: {character?: Character, sendHandler?: (message: MessageSendSchema) => void}) {
     const [message, setMessage] = useState('');
     const [preview, setPreview] = useState('&nbsp;');
     const previewModalRef = useRef<HTMLDialogElement>(null);
-    const previewRef = useRef<HTMLDivElement>(null);
 
     useMemo(() => {
         // Handle message preview
@@ -16,7 +16,7 @@ export default function ChatForm({character}: {character?: Character}) {
         } else {
             setPreview(message);
         }
-    }, [message]);
+    }, [message, character]);
 
     function handleModal() {
         previewModalRef.current?.showModal();
@@ -40,7 +40,20 @@ export default function ChatForm({character}: {character?: Character}) {
                             {` ${character?.quirk.suffix}`}
                         </DBBCode>
                     </div>
-                    <form className="flex m-1" action={async (data: FormData) => {}}>
+                    <form className="flex m-1" 
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        const messageData: MessageSendSchema = {
+                            content: message,
+                            user: {
+                                name: character?.name ?? "User",
+                                color: character?.color ?? "000000",
+                                character: character ?? characters["dave"]
+                            }
+                        }
+                        sendHandler?.(messageData);
+                        setMessage('');
+                    }}>
                         <input type="text" className="grow input input-xs" autoComplete="false" value={message} onChange={(e) => setMessage(e.target.value)}/>
                         <button type="submit" className="btn btn-xs ml-1">Send</button>
                     </form>
@@ -57,7 +70,19 @@ export default function ChatForm({character}: {character?: Character}) {
                     {character?.quirk.prefix}{preview}{character?.quirk.suffix}
                 </DBBCode>
             </div>
-            <form className="flex m-1" action={async (data: FormData) => {}}>
+            <form className="flex m-1" onSubmit={(e) => {
+                e.preventDefault();
+                const messageData: MessageSendSchema = {
+                    content: message,
+                    user: {
+                        name: character?.name ?? "User",
+                        color: character?.color ?? "000000",
+                        character: character ?? characters["dave"]
+                    }
+                }
+                sendHandler?.(messageData);
+                setMessage('');
+            }}>
                 <input type="text" className="grow input input-xs" autoComplete="false" value={message} onChange={(e) => setMessage(e.target.value)}/>
                 <button type="submit" className="btn btn-xs ml-1">Send</button>
             </form>

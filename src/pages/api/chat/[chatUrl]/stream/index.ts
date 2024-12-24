@@ -1,10 +1,12 @@
-import { createSession } from "better-sse"
-import { MessageSchema } from "@/app/_components/shared/Message";
+import { createSession, createChannel } from "better-sse"
+import { MessageSchema, MessageSendSchema } from "@/app/_components/shared/Message";
 import { NextApiRequest, NextApiResponse } from "next";
 import { characters } from "@/lib/shared/homestuck";
+import { channels, broadcastSessionCount } from "@/lib/server/channels";
 
 export const dynamic = "force-dynamic";
 
+let counter = 0
 
 // TODO: Transition to App route (src/app/api/chat/[chatUrl]/stream/route.ts)
 // when https://github.com/MatthewWid/better-sse/issues/79 is resolved.
@@ -13,25 +15,37 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const session = await createSession(req, res)
-    let counter = 0
+    if (req.method === "GET") {
+        const session = await createSession(req, res)
+        const channel = channels[req.query.chatUrl as string] ?? createChannel()
+        if (!channels[req.query.chatUrl as string]) {
+            channels[req.query.chatUrl as string] = channel
+        }
+        channel.register(session)
+    
+        channel.on("session-registered", () => {
+            broadcastSessionCount(channel)
+        }).on("session-deregistered", () => {
+            broadcastSessionCount(channel)
+        });
+    }
 
-    while (true) {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        const characterKeys = Object.keys(characters)
-        const randomCharacter = characters[characterKeys[Math.floor(Math.random() * characterKeys.length)]]
-        const message: MessageSchema = {
+    if (req.method === "POST") {
+        const message: MessageSendSchema = JSON.parse(req.body)
+        const channel = channels[req.query.chatUrl as string]
+        channel.broadcast({
             id: counter++,
-            content: randomCharacter.quote ?? "Hello, world!",
+            content: message.content,
             sentAt: new Date(),
             user: {
-                id: -1,
-                counter: Infinity,
-                name: "SYSTEM",
-                color: randomCharacter.color,
-                character: randomCharacter
+                id: 0,
+                counter: 0,
+                name: message.user.name,
+                color: message.user.color,
+                character: message.user.character
             }
-        }
-        session.push(message)
+        })
+        res.status(200).end()
     }
+
 }

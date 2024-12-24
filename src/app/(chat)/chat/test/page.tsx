@@ -1,13 +1,12 @@
 'use client';
-import { UIEvent, UIEventHandler, useEffect, useRef, useState } from "react"
-import { faker } from "@faker-js/faker";
-import { StickToBottom, useStickToBottom, useStickToBottomContext } from 'use-stick-to-bottom';
+import { useEffect, useState } from "react"
+import { useStickToBottom } from 'use-stick-to-bottom';
 import ChatForm from "@/app/_components/client/ChatForm"
-import Message, { MessageSchema } from "@/app/_components/shared/Message"
+import Message, { MessageSchema, MessageSendSchema } from "@/app/_components/shared/Message"
 import { Character, characters } from "@/lib/shared/homestuck";
 import MessageList from "@/app/_components/client/MessageList"
-import { useParams } from "next/navigation";
 import { DBBCode } from "@/app/_components/shared/DBBCode";
+import CharacterSelect from "@/app/_components/client/CharacterSelect";
 
 export default function Page() {
   const chatUrl = 'test'
@@ -15,24 +14,57 @@ export default function Page() {
   const [messages, setMessages] = useState<MessageSchema[]>([])
   const [chatTheme, setChatTheme] = useState('default')
   const [character, setCharacter] = useState<Character | undefined>(undefined)
+  const [characterKey, setCharacterKey] = useState('')
   const { scrollRef, contentRef } = useStickToBottom();
+  const [users, setUsers] = useState(0)
 
   useEffect(() => {
     const eventSource = new EventSource(`/api/chat/${chatUrl}/stream`)
-    setCharacter(characters['dave'])
+    const characterKeys = Object.keys(characters)
+    //set random character
+    const key = characterKeys[Math.floor(Math.random() * characterKeys.length)]
+    setCharacter(characters[key])
+    setCharacterKey(key)
     eventSource.addEventListener('message', (event) => {
       const data = JSON.parse(event.data) as MessageSchema
-      setMessages((prev) => [
-        ...prev,
-        data
-      ])
+      addToMessages(data)
+    })
+
+    eventSource.addEventListener('session-count', (event) => {
+      setUsers(parseInt(event.data))
     })
 
     return () => {
       eventSource.close()
     }
   }, [])
-  
+
+  function addToMessages(data: MessageSchema) {
+    setMessages((prev) => {
+      // If over 100 messages, remove the first message until there are 100 messages
+      while (prev.length >= 100) {
+        prev.shift()
+      }
+      return [
+        ...prev,
+        data
+      ]
+    })
+  }
+
+  function handleSend(message: MessageSendSchema) {
+    // post request to /api/chat/test/stream
+    fetch(`/api/chat/${chatUrl}/stream`, {
+      method: 'POST',
+      body: JSON.stringify(message),
+    })
+  }
+
+  function setCharacterHandler(character: string) {
+    setCharacter(characters[character])
+    setCharacterKey(character)
+  }
+
   // Pulsing glow bottom border effect at bottom of chat when new messages are received and the user is not scrolled to the bottom
   // Glow colour is the colour of the message text
   useEffect(() => {
@@ -63,7 +95,7 @@ export default function Page() {
                   {message.content}
                 </DBBCode>
                 <DBBCode quirk={message.user.character.quirk}>
-                {` ${message.user.character.quirk.suffix}`}
+                  {` ${message.user.character.quirk.suffix}`}
                 </DBBCode>
               </Message>
             ))}
@@ -71,9 +103,9 @@ export default function Page() {
         </table>
       </div>
       <div className="fixed bottom-1 left-0 w-[calc(100vw)] px-1 py-0">
-        <ChatForm character={character} />
+        <ChatForm character={character} sendHandler={handleSend} />
       </div>
-      <div className="rounded-box col-span-2 h-[calc(100vh-80px)] bg-base-100">
+      <div className="flex flex-col rounded-box col-span-2 h-[calc(100vh-80px)] bg-base-100">
         <div className="dropdown mb-72">
           <div tabIndex={0} role="button" className="btn m-1">
             Theme
@@ -93,7 +125,7 @@ export default function Page() {
                 name="theme-dropdown"
                 className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
                 aria-label="Default"
-                value="default" 
+                value="default"
                 onChange={(e) => {
                   if (e.target.checked) {
                     setChatTheme(e.target.value)
@@ -153,6 +185,12 @@ export default function Page() {
                 }} />
             </li>
           </ul>
+        </div>
+        <div>
+          {users} user{users > 1 ? "s" : ""}
+        </div>
+        <div>
+          <CharacterSelect character={character} characterKey={characterKey} setCharacter={setCharacterHandler} />
         </div>
       </div>
     </div>

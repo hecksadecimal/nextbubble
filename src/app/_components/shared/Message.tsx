@@ -13,6 +13,15 @@ export type MessageSchema = {
     };
 };
 
+export type MessageSendSchema = {
+    content: string;
+    user: {
+        name: string;
+        color: string;
+        character: Character;
+    };
+};
+
 export default function Message({ children, id, counter, color, sentAt }: { children: React.ReactNode, id: number, counter: number, color: string, sentAt?: Date }) {
     return (
         <tr key={id} id={`message_` + id} className="even:bg-base-200 text-start align-top">
