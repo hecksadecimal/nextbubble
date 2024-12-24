@@ -18,7 +18,7 @@ const toNode = (
 
 const bbOptions: BBobCoreOptions = {
   onlyAllowTags: ["quote", "spoiler", "tooltip", 
-                  "div", "modal", "countdown", 
+                  "div", "modal", "countdown", "url",
                   "bubble", "bubble_r", "email", 
                   "pad", "color", "colour", "br",
                   "c", "font", "bone", "gradient",
@@ -116,6 +116,14 @@ const preset = presetReact.extend((tags, options) => ({
       attrs: { style: { fontFamily: font } },
       content: node.content
     };
+  },
+  url: node => {
+    const href = getUniqAttr(node.attrs)
+    return {
+      tag: "a",
+      attrs: {href: href, target: "_blank"},
+      content: node.content
+    }
   },
   bone: node => ({
     tag: "span",
