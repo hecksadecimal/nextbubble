@@ -23,6 +23,7 @@ const bbOptions: BBobCoreOptions = {
                   "pad", "color", "colour", "br",
                   "c", "font", "bone", "gradient",
                   "b", "i", "u", "s", "sub", "sup"],
+  contextFreeTags: ['raw'],
   enableEscapeTags: true
 }
 
@@ -84,21 +85,30 @@ const preset = presetReact.extend((tags, options) => ({
     tag: "pre",
     content: node.content,
   }),
-  color: (node, { render }) => ({
-    tag: "span",
-    attrs: { style: { color: render(node.content) } },
-    content: node.content
-  }),
-  colour: (node, { render }) => ({
-    tag: "span",
-    attrs: { style: { color: render(node.content) } },
-    content: node.content
-  }),
-  c: (node, { render }) => ({
-    tag: "span",
-    attrs: { style: { color: render(node.content) } },
-    content: node.content
-  }),
+  color: node => {
+    const color = getUniqAttr(node.attrs)
+    return {
+      tag: "span",
+      attrs: { style: { color: color } },
+      content: node.content
+    }
+  },
+  colour: node => {
+    const color = getUniqAttr(node.attrs)
+    return {
+      tag: "span",
+      attrs: { style: { color: color } },
+      content: node.content
+    }
+  },
+  c: node => {
+    const color = getUniqAttr(node.attrs)
+    return {
+      tag: "span",
+      attrs: { style: { color: color } },
+      content: node.content
+    }
+  },
   font: node => {
     const font = getUniqAttr(node.attrs);
     return {
