@@ -7,10 +7,11 @@ import { characters } from "@/lib/shared/homestuck";
 import MessageList from "@/app/_components/client/MessageList"
 import { DBBCode } from "@/app/_components/shared/DBBCode";
 
-export default function Page({
+
+export default async function Page({
   params,
 }: {
-  params: { chatUrl: string }
+  params: Promise<{ slug: string }>
 }) {
   //const { chatUrl } = params
 

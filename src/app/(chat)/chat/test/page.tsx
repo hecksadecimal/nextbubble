@@ -9,11 +9,7 @@ import MessageList from "@/app/_components/client/MessageList"
 import { useParams } from "next/navigation";
 import { DBBCode } from "@/app/_components/shared/DBBCode";
 
-export default function Page({
-  params,
-}: {
-  params: { chatUrl: string }
-}) {
+export default function Page() {
   const chatUrl = 'test'
 
   const [messages, setMessages] = useState<MessageSchema[]>([])
