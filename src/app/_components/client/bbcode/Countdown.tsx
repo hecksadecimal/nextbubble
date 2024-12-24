@@ -2,12 +2,20 @@
 import { useRef, useState } from "react";
 
 export default function Countdown({ date }: { date: string }) {
+    console.log(date)
     const [days, setDays] = useState(0);
     const [hours, setHours] = useState(0);
     const [minutes, setMinutes] = useState(0);
     const [seconds, setSeconds] = useState(0);
 
-    const countdownDate = new Date(date).getTime();
+    let intDate = 0
+    try {
+        intDate = parseInt(date)
+    } catch {
+        intDate = 0
+    }
+    const countdownDate = new Date(intDate * 1000).getTime();
+    console.log(countdownDate)
 
     function updateCountdown() {
         const now = new Date().getTime();
