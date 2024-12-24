@@ -302,7 +302,7 @@ export const characters: { [key: string]: Character } = {
         'acronym': 'AC',
         'name': 'arsenicCatnip',
         'color': '416600',
-        'quote': ":33 < but do you think you could purrhaps please spare your computer for just the most fl33ting of moments?",
+        'quote': "but do you think you could purrhaps please spare your computer for just the most fl33ting of moments?",
         'quirk': {
             'case': 'lower',
             'replacements': [['ee', '33'], ["'", " "], [":dd", ":DD"], [";dd", ";DD"], ["dd:", "DD:"], [":pp", ":PP"], [";pp", ";PP"]],
@@ -350,7 +350,7 @@ export const characters: { [key: string]: Character } = {
         'acronym': 'CT',
         'name': 'centaursTesticle',
         'color': '000056',
-        'quote': "D --> How do you know about my perspiration problem",
+        'quote': "How do you know about my perspiration problem",
         'quirk': {
             'case': 'proper',
             'replacements': [["X", "%"], ["x", "%"], ["loo", "100"], ["Loo", "100"], ["ool", "001"], ["LOO", "100"], ["OOL", "001"], ["strong", "STRONG"], ["Strong", "STRONG"]],
@@ -458,7 +458,7 @@ export const characters: { [key: string]: Character } = {
         'acronym': 'MEULIN',
         'name': 'Meulin',
         'color': '416600',
-        'quote': "(=；ェ；=)  < YOU DON'T UNDERSTAND, M33NAH. THE F33LS. THE F333333333LS!!!!!!!!!",
+        'quote': "YOU DON'T UNDERSTAND, M33NAH. THE F33LS. THE F333333333LS!!!!!!!!!",
         'quirk': {
             'case': 'upper',
             'replacements': [["EE", "33"]],
@@ -506,7 +506,7 @@ export const characters: { [key: string]: Character } = {
         'acronym': 'HORUSS',
         'name': 'Horuss',
         'color': '000056',
-        'quote': "8=========D < Why the long face?",
+        'quote': "Why the long face?",
         'quirk': {
             'case': 'proper',
             'replacements': [["X", "%"], ["x", "%"], ["loo", "100"], ["Loo", "100"], ["ool", "001"], ["LOO", "100"], ["OOL", "001"], ["strong", "STRONG"], ["strength", "STRENGTH"], ["Strong", "STRONG"], ["Strength", "STRENGTH"]],

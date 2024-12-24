@@ -36,17 +36,27 @@ export default function Page({
       eventSource.close()
     }
   }, [])
-
   
+  // Pulsing glow bottom border effect at bottom of chat when new messages are received and the user is not scrolled to the bottom
+  // Glow colour is the colour of the message text
+  useEffect(() => {
+    if (scrollRef.current) {
+      if (scrollRef.current.scrollTop + scrollRef.current.clientHeight < scrollRef.current.scrollHeight - 50) {
+        scrollRef.current.style.borderBottom = `4px solid #${messages[messages.length - 1].user.color}`
+      } else {
+        scrollRef.current.style.borderBottom = 'none'
+      }
+    }
+  }, [messages])
 
 
   return (
     <div className="h-screen grow grid overflow-y-hidden overscroll-none gap-2 grid-cols-12 grid-rows-12 -m-2 p-2 bg-base-300">
-      <div ref={scrollRef} className="rounded-box text-pretty overscroll-contain min-h-0 min-w-0 h-[calc(100vh-80px)] overflow-y-scroll col-span-10 bg-base-100">
+      <div ref={scrollRef} className="rounded-box text-pretty animate-border overscroll-contain min-h-0 min-w-0 h-[calc(100vh-80px)] overflow-y-scroll col-span-10 bg-base-100">
         <table className="w-full table-auto border-collapse border-spacing-0">
           <MessageList theme={chatTheme} ref={contentRef}>
             {messages.map((message) => (
-              <Message key={message.id} id={message.id} color={message.user.color} counter={message.user.counter}>
+              <Message key={message.id} id={message.id} color={message.user.color} counter={message.user.counter} sentAt={new Date(message.sentAt)}>
                 {message.user.character.acronym &&
                   `${message.user.character.acronym}: `
                 }

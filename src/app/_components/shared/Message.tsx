@@ -3,6 +3,7 @@ import { Character } from "@/lib/shared/homestuck";
 export type MessageSchema = {
     id: number;
     content: string;
+    sentAt: Date;
     user: {
         id: number;
         name: string;
@@ -12,10 +13,14 @@ export type MessageSchema = {
     };
 };
 
-export default function Message({ children, id, counter, color }: { children: React.ReactNode, id: number, counter: number, color: string }) {
+export default function Message({ children, id, counter, color, sentAt }: { children: React.ReactNode, id: number, counter: number, color: string, sentAt?: Date }) {
     return (
         <tr key={id} id={`message_` + id} className="even:bg-base-200 text-start align-top">
-            <td className={`px-1 -mt-2 w-12 text-end align-top border-r-2 border-base-200 text-nowrap${ counter == null ? " text-lg" : ""}`}>{counter == null ? "∞" : counter}</td>
+            <td className={`px-1 -mt-2 w-12 text-end align-top border-r-2 border-base-200 text-nowrap${ counter == null ? " text-lg" : ""}`}>
+                <div data-tip={sentAt?.toLocaleString()} className="tooltip tooltip-right">
+                    <button className="btn btn-ghost btn-xs text-lg">{counter == null ? "∞" : counter}</button>
+                </div>
+            </td>
             <td style={{color: "#" + color}} className="pl-1 bg-base-100 transition-all duration-1000">
                 {children}
             </td>

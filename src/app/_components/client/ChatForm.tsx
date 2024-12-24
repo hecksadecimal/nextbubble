@@ -27,11 +27,17 @@ export default function ChatForm({character}: {character?: Character}) {
             <dialog ref={previewModalRef} className="modal">
                 <div className="modal-box">
                     <div style={{color: character?.color ? "#" + character.color : 'black'}}>
-                        <DBBCode>
-                            {character?.acronym ? character.acronym + ": " : ""}
+                        {character?.acronym &&
+                            `${character.acronym}: `
+                        }
+                        <DBBCode quirk={character?.quirk}>
+                            {`${character?.quirk.prefix} `}
                         </DBBCode>
                         <DBBCode quirk={character?.quirk}>
-                            {character?.quirk.prefix}{preview}{character?.quirk.suffix}
+                            {preview}
+                        </DBBCode>
+                        <DBBCode quirk={character?.quirk}>
+                            {` ${character?.quirk.suffix}`}
                         </DBBCode>
                     </div>
                     <form className="flex m-1" action={async (data: FormData) => {}}>

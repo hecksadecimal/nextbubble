@@ -1,6 +1,7 @@
 import { createSession } from "better-sse"
 import { MessageSchema } from "@/app/_components/shared/Message";
 import { NextApiRequest, NextApiResponse } from "next";
+import { characters } from "@/lib/shared/homestuck";
 
 export const dynamic = "force-dynamic";
 
@@ -17,26 +18,18 @@ export default async function handler(
 
     while (true) {
         await new Promise(resolve => setTimeout(resolve, 1000))
+        const characterKeys = Object.keys(characters)
+        const randomCharacter = characters[characterKeys[Math.floor(Math.random() * characterKeys.length)]]
         const message: MessageSchema = {
             id: counter++,
-            content: "Hello, world!",
+            content: randomCharacter.quote ?? "Hello, world!",
+            sentAt: new Date(),
             user: {
                 id: -1,
                 counter: Infinity,
                 name: "SYSTEM",
-                color: "#000000",
-                character: {
-                    acronym: "SYS", 
-                    name: "SYSTEM",
-                    color: "#000000",
-                    quote: "Just an ordinary system message.",
-                    quirk: {
-                        case: "normal",
-                        prefix: "",
-                        suffix: "",
-                        replacements: []
-                    }
-                }
+                color: randomCharacter.color,
+                character: randomCharacter
             }
         }
         session.push(message)
