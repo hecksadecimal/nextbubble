@@ -1,11 +1,10 @@
 'use client';
-import { UIEvent, UIEventHandler, useEffect, useRef, useState } from "react"
+import { UIEvent, useEffect, useRef, useState } from "react"
 import { faker } from "@faker-js/faker";
 import ChatForm from "@/app/_components/client/ChatForm"
 import Message, { MessageSchema } from "@/app/_components/shared/Message"
 import { characters } from "@/lib/shared/homestuck";
 import MessageList from "@/app/_components/client/MessageList"
-import { useParams } from "next/navigation";
 import { DBBCode } from "@/app/_components/shared/DBBCode";
 
 export default function Page({
@@ -13,11 +12,10 @@ export default function Page({
 }: {
   params: { chatUrl: string }
 }) {
-  const { chatUrl } = useParams()
+  //const { chatUrl } = params
 
   const [messages, setMessages] = useState<MessageSchema[]>([])
   const messagesRef = useRef<HTMLTableElement>(null)
-  const [messageCounter, setMessageCounter] = useState(1)
   const [chatTheme, setChatTheme] = useState('default')
 
   // Interval, add one message every second
@@ -83,13 +81,15 @@ export default function Page({
   useEffect(() => {
     const messages: MessageSchema[] = []
     let counter = 1
-    for (const [key, value] of Object.entries(characters)) {
+    for (const [_key, value] of Object.entries(characters)) {
       const lorem = faker.lorem.paragraphs(5)
       messages.push({
         id: counter,
         content: `${lorem}\n${bbcodeTestString()}`.replaceAll('\n\n', '[br] [br]').replaceAll('\n', '[br]'),
+        sentAt: new Date(),
         user: {
           id: counter,
+          counter: counter,
           name: value.name,
           color: value.color,
           character: value,
@@ -136,7 +136,7 @@ export default function Page({
         <table ref={messagesRef} className="w-full table-auto border-collapse border-spacing-0">
           <MessageList theme={chatTheme}>
             {messages.map((message) => (
-              <Message key={message.id} id={message.id} color={message.user.color}>
+              <Message key={message.id} id={message.id} color={message.user.color} counter={0}>
                 {message.user.character.acronym &&
                   `${message.user.character.acronym}: `
                 }
