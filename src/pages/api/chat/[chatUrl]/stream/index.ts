@@ -3,6 +3,7 @@ import { MessageSchema, MessageSendSchema } from "@/app/_components/shared/Messa
 import { NextApiRequest, NextApiResponse } from "next";
 import { characters } from "@/lib/shared/homestuck";
 import { channels, broadcastSessionCount } from "@/lib/server/channels";
+import { decancer, isCancerous, cancerPercentage } from '@imranbarbhuiya/decancer';
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,7 @@ export default async function handler(
 
     if (req.method === "POST") {
         const message: MessageSendSchema = JSON.parse(req.body)
+        message.content = decancer(message.content)
         const channel = channels[req.query.chatUrl as string]
         channel.broadcast({
             id: counter++,

@@ -4,6 +4,7 @@ import { DBBCode } from '../shared/DBBCode';
 import { Character, characters } from '@/lib/shared/homestuck';
 import { MessageSendSchema } from '../shared/Message';
 
+
 export default function ChatForm({character, sendHandler}: {character?: Character, sendHandler?: (message: MessageSendSchema) => void}) {
     const [message, setMessage] = useState('');
     const [preview, setPreview] = useState('&nbsp;');

@@ -5,9 +5,9 @@ import { characters } from "@/lib/shared/homestuck";
 export default function CharacterSelect({ character, characterKey, setCharacter }: { character?: Character, characterKey?: string, setCharacter: (character: string) => void }) {
     const keys = Object.keys(characters);
     return (
-        <select className="input input-sm" value={characterKey} onChange={(e) => setCharacter(e.target.value)}>
+        <select className="select select-bordered select-xs w-full max-w-xs" value={characterKey} onChange={(e) => setCharacter(e.target.value)}>
             {keys.map((key, value) => (
-                <option key={key} value={key}>{characters[key].name}</option>
+                <option disabled={key == characterKey} key={key} value={key}>{characters[key].name}</option>
             ))}
         </select>
     )

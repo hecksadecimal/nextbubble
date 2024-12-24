@@ -79,119 +79,125 @@ export default function Page() {
 
 
   return (
-    <div className="h-screen grow grid overflow-y-hidden overscroll-none gap-2 grid-cols-12 grid-rows-12 -m-2 p-2 bg-base-300">
-      <div ref={scrollRef} className="rounded-box text-pretty animate-border overscroll-contain min-h-0 min-w-0 h-[calc(100vh-80px)] overflow-y-scroll col-span-10 bg-base-100">
-        <table className="w-full table-auto border-collapse border-spacing-0">
-          <MessageList theme={chatTheme} ref={contentRef}>
-            {messages.map((message) => (
-              <Message key={message.id} id={message.id} color={message.user.color} counter={message.user.counter} sentAt={new Date(message.sentAt)}>
-                {message.user.character.acronym &&
-                  `${message.user.character.acronym}: `
-                }
-                <DBBCode quirk={message.user.character.quirk}>
-                  {`${message.user.character.quirk.prefix} `}
-                </DBBCode>
-                <DBBCode quirk={message.user.character.quirk}>
-                  {message.content}
-                </DBBCode>
-                <DBBCode quirk={message.user.character.quirk}>
-                  {` ${message.user.character.quirk.suffix}`}
-                </DBBCode>
-              </Message>
-            ))}
-          </MessageList>
-        </table>
+    <div className="h-screen grow flex flex-col overflow-y-hidden overscroll-none gap-2 -m-2 p-2 bg-base-300">
+      <div className="h-8 flex rounded-box bg-base-100 md:hidden">
+        test
       </div>
-      <div className="fixed bottom-1 left-0 w-[calc(100vw)] px-1 py-0">
-        <ChatForm character={character} sendHandler={handleSend} />
-      </div>
-      <div className="flex flex-col rounded-box col-span-2 h-[calc(100vh-80px)] bg-base-100">
-        <div className="dropdown mb-72">
-          <div tabIndex={0} role="button" className="btn m-1">
-            Theme
-            <svg
-              width="12px"
-              height="12px"
-              className="inline-block h-2 w-2 fill-current opacity-60"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 2048 2048">
-              <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
-            </svg>
+      <div className="flex gap-2 overscroll-contain min-h-0 min-w-0 h-full w-full">
+        <div ref={scrollRef} className="rounded-box text-pretty animate-border overscroll-contain min-h-0 min-w-0 h-full overflow-y-scroll w-full bg-base-100">
+          <table className="w-full table-auto border-collapse border-spacing-0">
+            <MessageList theme={chatTheme} ref={contentRef}>
+              {messages.map((message) => (
+                <Message key={message.id} id={message.id} color={message.user.color} counter={message.user.counter} sentAt={new Date(message.sentAt)}>
+                  {message.user.character.acronym &&
+                    `${message.user.character.acronym}: `
+                  }
+                  <DBBCode quirk={message.user.character.quirk}>
+                    {`${message.user.character.quirk.prefix} `}
+                  </DBBCode>
+                  <DBBCode quirk={message.user.character.quirk}>
+                    {message.content}
+                  </DBBCode>
+                  <DBBCode quirk={message.user.character.quirk}>
+                    {` ${message.user.character.quirk.suffix}`}
+                  </DBBCode>
+                </Message>
+              ))}
+            </MessageList>
+          </table>
+        </div>
+        <div className="flex-col rounded-box w-72 h-full bg-base-100 hidden md:flex">
+          <div className="dropdown mb-72">
+            <div tabIndex={0} role="button" className="btn m-1">
+              Theme
+              <svg
+                width="12px"
+                height="12px"
+                className="inline-block h-2 w-2 fill-current opacity-60"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 2048 2048">
+                <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
+              </svg>
+            </div>
+            <ul tabIndex={0} className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl">
+              <li>
+                <input
+                  type="radio"
+                  name="theme-dropdown"
+                  className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                  aria-label="Default"
+                  value="default"
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setChatTheme(e.target.value)
+                    }
+                  }} />
+              </li>
+              <li>
+                <input
+                  type="radio"
+                  name="theme-dropdown"
+                  className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                  aria-label="Retro"
+                  value="retro"
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setChatTheme(e.target.value)
+                    }
+                  }} />
+              </li>
+              <li>
+                <input
+                  type="radio"
+                  name="theme-dropdown"
+                  className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                  aria-label="Cyberpunk"
+                  value="cyberpunk"
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setChatTheme(e.target.value)
+                    }
+                  }} />
+              </li>
+              <li>
+                <input
+                  type="radio"
+                  name="theme-dropdown"
+                  className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                  aria-label="Valentine"
+                  value="valentine"
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setChatTheme(e.target.value)
+                    }
+                  }} />
+              </li>
+              <li>
+                <input
+                  type="radio"
+                  name="theme-dropdown"
+                  className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                  aria-label="Aqua"
+                  value="aqua"
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setChatTheme(e.target.value)
+                    }
+                  }} />
+              </li>
+            </ul>
           </div>
-          <ul tabIndex={0} className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl">
-            <li>
-              <input
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                aria-label="Default"
-                value="default"
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setChatTheme(e.target.value)
-                  }
-                }} />
-            </li>
-            <li>
-              <input
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                aria-label="Retro"
-                value="retro"
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setChatTheme(e.target.value)
-                  }
-                }} />
-            </li>
-            <li>
-              <input
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                aria-label="Cyberpunk"
-                value="cyberpunk"
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setChatTheme(e.target.value)
-                  }
-                }} />
-            </li>
-            <li>
-              <input
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                aria-label="Valentine"
-                value="valentine"
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setChatTheme(e.target.value)
-                  }
-                }} />
-            </li>
-            <li>
-              <input
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                aria-label="Aqua"
-                value="aqua"
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setChatTheme(e.target.value)
-                  }
-                }} />
-            </li>
-          </ul>
+          <div>
+            {users} user{users > 1 ? "s" : ""}
+          </div>
+          <div>
+            <CharacterSelect character={character} characterKey={characterKey} setCharacter={setCharacterHandler} />
+          </div>
         </div>
-        <div>
-          {users} user{users > 1 ? "s" : ""}
-        </div>
-        <div>
-          <CharacterSelect character={character} characterKey={characterKey} setCharacter={setCharacterHandler} />
-        </div>
+      </div>
+
+      <div>
+        <ChatForm character={character} sendHandler={handleSend} />
       </div>
     </div>
   )
