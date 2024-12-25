@@ -22,6 +22,7 @@ export default async function handler(
         if (!channels[req.query.chatUrl as string]) {
             channels[req.query.chatUrl as string] = channel
         }
+        channel.setMaxListeners(0)
         channel.register(session)
     
         channel.on("session-registered", () => {
