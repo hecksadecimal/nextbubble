@@ -22,7 +22,8 @@ const bbOptions: BBobCoreOptions = {
                   "bubble", "bubble_r", "email", 
                   "pad", "color", "colour", "br",
                   "c", "font", "bone", "gradient",
-                  "b", "i", "u", "s", "sub", "sup"],
+                  "b", "i", "u", "s", "sub", "sup",
+                  "table", "td", "tr", "tbody", "thead"],
   contextFreeTags: ['raw'],
   enableEscapeTags: true
 }
@@ -154,6 +155,15 @@ const preset = presetReact.extend((tags, options) => ({
       content: node.content
     };
   },
+  table: node => {
+    return {
+      tag: "table",
+      content: node.content,
+      attrs: {
+        className: "table table-zebra table-xs"
+      }
+    }
+  }
 }));
 
 

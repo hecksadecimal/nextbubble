@@ -26,7 +26,7 @@ export default async function RootLayout({
   const { user } = await getCurrentSession();
   
   return (
-    <html lang="en" data-theme="light" className="h-dvh w-dvw flex flex-col">
+    <html lang="en" data-theme="light" className="h-dvh w-dvw flex flex-col overflow-hidden">
       <head>
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, interactive-widget=resizes-content" />
       </head>
