@@ -2,11 +2,13 @@
 import { useEffect, useState } from "react"
 import { useStickToBottom } from 'use-stick-to-bottom';
 import ChatForm from "@/app/_components/client/ChatForm"
-import Message, { MessageSchema, MessageSendSchema } from "@/app/_components/shared/Message"
+import Message, { MessageSchema, MessageSendSchema } from "@/app/_components/client/Message"
 import { Character, characters } from "@/lib/shared/homestuck";
 import MessageList from "@/app/_components/client/MessageList"
 import { DBBCode } from "@/app/_components/shared/DBBCode";
 import CharacterSelect from "@/app/_components/client/CharacterSelect";
+import ThemeSelect from "@/app/_components/client/ThemeSelect";
+import Modal from "@/app/_components/client/bbcode/Modal";
 
 export default function Page() {
   const chatUrl = 'test'
@@ -21,7 +23,6 @@ export default function Page() {
   useEffect(() => {
     const eventSource = new EventSource(`/api/chat/${chatUrl}/stream`)
     const characterKeys = Object.keys(characters)
-    //set random character
     const key = characterKeys[Math.floor(Math.random() * characterKeys.length)]
     setCharacter(characters[key])
     setCharacterKey(key)
@@ -65,6 +66,10 @@ export default function Page() {
     setCharacterKey(character)
   }
 
+  function themeChangeHandler(theme: string) {
+    setChatTheme(theme)
+  }
+
   // Pulsing glow bottom border effect at bottom of chat when new messages are received and the user is not scrolled to the bottom
   // Glow colour is the colour of the message text
   useEffect(() => {
@@ -80,15 +85,23 @@ export default function Page() {
 
   return (
     <div className="h-screen grow flex flex-col overflow-y-hidden overscroll-none gap-2 -m-2 p-2 bg-base-300">
-      <div className="h-8 flex rounded-box bg-base-100 md:hidden">
-        test
+      <div className="h-12 flex gap-2 flex-row-reverse rounded-box bg-base-100 md:hidden">
+        <ThemeSelect themeChanged={themeChangeHandler}/>
+        <Modal buttonText="Settings">
+          <h3>Character</h3>
+          <br />
+          <CharacterSelect character={character} characterKey={characterKey} setCharacter={setCharacterHandler} />
+        </Modal>
+        <Modal buttonText="Users">
+          {users} user{users ==1 ? "" : "s"}
+        </Modal>
       </div>
       <div className="flex gap-2 overscroll-contain min-h-0 min-w-0 h-full w-full">
         <div ref={scrollRef} className="rounded-box text-pretty animate-border overscroll-contain min-h-0 min-w-0 h-full overflow-y-scroll w-full bg-base-100">
           <table className="w-full table-auto border-collapse border-spacing-0">
             <MessageList theme={chatTheme} ref={contentRef}>
               {messages.map((message) => (
-                <Message key={message.id} id={message.id} color={message.user.color} counter={message.user.counter} sentAt={new Date(message.sentAt)}>
+                <Message key={message.id} id={message.id} color={message.user.color} counter={message.user.counter} theme={chatTheme} sentAt={new Date(message.sentAt)}>
                   {message.user.character.acronym &&
                     `${message.user.character.acronym}: `
                   }
@@ -107,86 +120,7 @@ export default function Page() {
           </table>
         </div>
         <div className="flex-col rounded-box w-72 h-full bg-base-100 hidden md:flex">
-          <div className="dropdown mb-72">
-            <div tabIndex={0} role="button" className="btn m-1">
-              Theme
-              <svg
-                width="12px"
-                height="12px"
-                className="inline-block h-2 w-2 fill-current opacity-60"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 2048 2048">
-                <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
-              </svg>
-            </div>
-            <ul tabIndex={0} className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl">
-              <li>
-                <input
-                  type="radio"
-                  name="theme-dropdown"
-                  className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                  aria-label="Default"
-                  value="default"
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setChatTheme(e.target.value)
-                    }
-                  }} />
-              </li>
-              <li>
-                <input
-                  type="radio"
-                  name="theme-dropdown"
-                  className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                  aria-label="Retro"
-                  value="retro"
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setChatTheme(e.target.value)
-                    }
-                  }} />
-              </li>
-              <li>
-                <input
-                  type="radio"
-                  name="theme-dropdown"
-                  className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                  aria-label="Cyberpunk"
-                  value="cyberpunk"
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setChatTheme(e.target.value)
-                    }
-                  }} />
-              </li>
-              <li>
-                <input
-                  type="radio"
-                  name="theme-dropdown"
-                  className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                  aria-label="Valentine"
-                  value="valentine"
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setChatTheme(e.target.value)
-                    }
-                  }} />
-              </li>
-              <li>
-                <input
-                  type="radio"
-                  name="theme-dropdown"
-                  className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                  aria-label="Aqua"
-                  value="aqua"
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setChatTheme(e.target.value)
-                    }
-                  }} />
-              </li>
-            </ul>
-          </div>
+          <ThemeSelect themeChanged={themeChangeHandler} />
           <div>
             {users} user{users > 1 ? "s" : ""}
           </div>
@@ -195,7 +129,6 @@ export default function Page() {
           </div>
         </div>
       </div>
-
       <div>
         <ChatForm character={character} sendHandler={handleSend} />
       </div>

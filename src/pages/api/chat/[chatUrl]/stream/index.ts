@@ -1,5 +1,5 @@
 import { createSession, createChannel } from "better-sse"
-import { MessageSchema, MessageSendSchema } from "@/app/_components/shared/Message";
+import { MessageSchema, MessageSendSchema } from "@/app/_components/client/Message";
 import { NextApiRequest, NextApiResponse } from "next";
 import { characters } from "@/lib/shared/homestuck";
 import { channels, broadcastSessionCount } from "@/lib/server/channels";

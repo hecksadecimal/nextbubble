@@ -2,7 +2,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { DBBCode } from '../shared/DBBCode';
 import { Character, characters } from '@/lib/shared/homestuck';
-import { MessageSendSchema } from '../shared/Message';
+import { MessageSendSchema } from './Message';
 
 
 export default function ChatForm({character, sendHandler}: {character?: Character, sendHandler?: (message: MessageSendSchema) => void}) {
@@ -64,11 +64,17 @@ export default function ChatForm({character, sendHandler}: {character?: Characte
                 </form>
             </dialog>
             <div id="preview" className="input input-xs m-1 truncate cursor-pointer" style={{color: character?.color ? "#" + character.color : 'black'}} onClick={handleModal}>
-                <DBBCode>
-                    {character?.acronym ? character.acronym + ": " : ""}
+                {character?.acronym &&
+                  `${character.acronym}: `
+                }
+                <DBBCode quirk={character?.quirk}>
+                  {`${character?.quirk.prefix} `}
                 </DBBCode>
                 <DBBCode quirk={character?.quirk}>
-                    {character?.quirk.prefix}{preview}{character?.quirk.suffix}
+                  {preview}
+                </DBBCode>
+                <DBBCode quirk={character?.quirk}>
+                  {` ${character?.quirk.suffix}`}
                 </DBBCode>
             </div>
             <form className="flex m-1" onSubmit={(e) => {

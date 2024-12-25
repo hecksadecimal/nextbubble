@@ -2,7 +2,7 @@
 import { UIEvent, useEffect, useRef, useState } from "react"
 import { faker } from "@faker-js/faker";
 import ChatForm from "@/app/_components/client/ChatForm"
-import Message, { MessageSchema } from "@/app/_components/shared/Message"
+import Message, { MessageSchema } from "@/app/_components/client/Message"
 import { characters } from "@/lib/shared/homestuck";
 import MessageList from "@/app/_components/client/MessageList"
 import { DBBCode } from "@/app/_components/shared/DBBCode";
