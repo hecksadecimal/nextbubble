@@ -165,16 +165,14 @@ const preset = presetReact.extend((tags, options) => ({
     }
   },
   img: (node, { render }) => {
-    const width = node.attrs ? node.attrs['w'] : "auto";
+    const width = node.attrs ? node.attrs['w'] : "75%";
     const height = node.attrs ? node.attrs['h'] : "auto";
-    console.log(width)
-    console.log(height)
     return toNode(
         "img",
         {
           src: render(node.content),
           style: {
-            width: width ?? "auto",
+            width: width ?? "75%",
             height: height ?? "auto"
           }
         },
