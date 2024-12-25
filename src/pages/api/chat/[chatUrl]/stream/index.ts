@@ -3,7 +3,7 @@ import { MessageSchema, MessageSendSchema } from "@/app/_components/client/Messa
 import { NextApiRequest, NextApiResponse } from "next";
 import { characters } from "@/lib/shared/homestuck";
 import { channels, broadcastSessionCount } from "@/lib/server/channels";
-import { decancer, isCancerous, cancerPercentage } from '@imranbarbhuiya/decancer';
+import { decancer } from "@/lib/shared/decancer";
 
 export const dynamic = "force-dynamic";
 

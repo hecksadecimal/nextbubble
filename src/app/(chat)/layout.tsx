@@ -26,9 +26,12 @@ export default async function RootLayout({
   const { user } = await getCurrentSession();
   
   return (
-    <html lang="en" data-theme="light" className="min-h-screen flex flex-col">
+    <html lang="en" data-theme="light" className="h-dvh w-dvw flex flex-col">
+      <head>
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, interactive-widget=resizes-content" />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-full grow overflow-hidden m-2`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col w-full h-full overflow-hidden m-2`}
       >
         {children}
       </body>

@@ -84,7 +84,7 @@ export default function Page() {
 
 
   return (
-    <div className="h-dvh grow flex flex-col overflow-y-hidden overscroll-none gap-2 -m-2 p-2 bg-base-300">
+    <div className="absolute h-dvh w-dvw flex flex-col overflow-y-hidden overscroll-none gap-2 -m-2 p-2 bg-base-300">
       <div className="h-12 flex gap-2 flex-row-reverse rounded-box bg-base-100 md:hidden">
         <ThemeSelect themeChanged={themeChangeHandler}/>
         <Modal buttonText="Settings">

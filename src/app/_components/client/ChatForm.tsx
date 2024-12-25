@@ -3,6 +3,7 @@ import { useMemo, useRef, useState } from 'react';
 import { DBBCode } from '../shared/DBBCode';
 import { Character, characters } from '@/lib/shared/homestuck';
 import { MessageSendSchema } from './Message';
+import { decancer } from '@/lib/shared/decancer';
 
 
 export default function ChatForm({character, sendHandler}: {character?: Character, sendHandler?: (message: MessageSendSchema) => void}) {
@@ -15,7 +16,7 @@ export default function ChatForm({character, sendHandler}: {character?: Characte
         if (message.length === 0) {
             setPreview(' ');
         } else {
-            setPreview(message);
+            setPreview(decancer(message));
         }
     }, [message, character]);
 
@@ -25,7 +26,7 @@ export default function ChatForm({character, sendHandler}: {character?: Characte
 
     return (
         <div className="flex flex-col">
-            <dialog ref={previewModalRef} className="modal">
+            <dialog ref={previewModalRef} className="modal modal-top md:modal-middle">
                 <div className="modal-box">
                     <div style={{color: character?.color ? "#" + character.color : 'black'}}>
                         {character?.acronym &&
