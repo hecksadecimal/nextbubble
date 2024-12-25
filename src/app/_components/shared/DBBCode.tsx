@@ -1,6 +1,6 @@
 import BBCode from '@bbob/react';
 import presetReact from '@bbob/preset-react';
-import { isStringNode, getUniqAttr, TagNode } from "@bbob/plugin-helper";
+import { isStringNode, getUniqAttr, attrValue, TagNode } from "@bbob/plugin-helper";
 import Spoiler from '../client/bbcode/Spoiler';
 import { Quirk, quirkText } from '@/lib/shared/quirks';
 import { BBobCoreOptions, BBobCoreTagNodeTree, TagNodeTree } from '@bbob/types';
@@ -163,7 +163,24 @@ const preset = presetReact.extend((tags, options) => ({
         className: "table table-zebra table-xs"
       }
     }
-  }
+  },
+  img: (node, { render }) => {
+    const width = node.attrs ? node.attrs['w'] : "auto";
+    const height = node.attrs ? node.attrs['h'] : "auto";
+    console.log(width)
+    console.log(height)
+    return toNode(
+        "img",
+        {
+          src: render(node.content),
+          style: {
+            width: width ?? "auto",
+            height: height ?? "auto"
+          }
+        },
+        null
+    )
+  },
 }));
 
 
