@@ -19,7 +19,7 @@ const toNode = (
 const bbOptions: BBobCoreOptions = {
   onlyAllowTags: ["quote", "spoiler", "tooltip", 
                   "div", "modal", "countdown", "url",
-                  "bubble", "bubble_r", "email", 
+                  "bubble", "bubble_r", "email", "img",
                   "pad", "color", "colour", "br",
                   "c", "font", "bone", "gradient",
                   "b", "i", "u", "s", "sub", "sup",
